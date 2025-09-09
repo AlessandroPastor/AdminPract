@@ -16,8 +16,8 @@ data class LoginDTO(
 )
 @Serializable
 data class LoginResponse(
-    val status: Boolean,
-    val message: String,
+    val status: Boolean?,
+    val message: String?,
     val data: LoginData
 )
 
@@ -142,7 +142,7 @@ fun decodeToken(token: String): User? {
         val username = jsonObject["username"]?.jsonPrimitive?.content ?: "Sin username"
         val email = jsonObject["email"]?.jsonPrimitive?.content ?: "Sin email"
         val code = jsonObject["code"]?.jsonPrimitive?.content
-        val imagenUrl = jsonObject["imagen_url"]?.jsonPrimitive?.content
+        val photo_url = jsonObject["imagen_url"]?.jsonPrimitive?.content
         val created_at = jsonObject["created_at"]?.jsonPrimitive?.content
 
         // Extraer roles (array de strings)
@@ -170,7 +170,7 @@ fun decodeToken(token: String): User? {
             fullName = fullName,
             username = username,
             code = code,
-            imagenUrl = imagenUrl,
+            photo_url = photo_url,
             roles = roles,
             permissions = permissions,
             created_at = created_at,

@@ -61,7 +61,6 @@ fun ModuleScreen(
         }
     }
 
-    AppTheme(darkTheme = isDarkMode) {
         NotificationHost(state = notificationState) {
             Scaffold(
                 floatingActionButton = {
@@ -148,7 +147,6 @@ fun ModuleScreen(
                     }
                 }
             }
-        }
     }
 
     selectedModule?.let { module ->

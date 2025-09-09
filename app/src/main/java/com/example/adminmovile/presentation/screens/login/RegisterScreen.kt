@@ -1,4 +1,4 @@
-package com.example.turismomovile.presentation.screens.login
+package com.example.adminmovile.presentation.screens.login
 
 import android.util.Patterns
 import androidx.compose.animation.AnimatedVisibility
@@ -52,14 +52,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.example.adminmovile.R
 import com.example.adminmovile.domain.model.User
-import com.example.adminmovile.presentation.screens.login.RegisterViewModel
 import com.example.adminmovile.data.remote.dto.LoginInput
 import com.example.adminmovile.data.remote.dto.decodeToken
-import com.example.adminmovile.presentation.theme.AppTheme
+import com.example.adminmovile.presentation.components.AdminSchoolBackground
 import com.example.adminmovile.presentation.theme.ThemeViewModel
 import com.example.adminmovile.presentation.components.AppCard
 import com.example.adminmovile.presentation.components.AppTextFieldWithKeyboard
-import com.example.adminmovile.presentation.components.FloatingBubblesBackground
 import com.example.adminmovile.presentation.components.ShowRegisterLoadingDialog
 import com.example.adminmovile.presentation.theme.AppColors
 import com.example.adminmovile.presentation.navigation.Routes
@@ -148,7 +146,7 @@ fun RegisterScreen(
                     fullName = decoded?.fullName,
                     username = decoded?.username ?: userResponse.username,
                     code = decoded?.code,
-                    imagenUrl = decoded?.imagenUrl,
+                    photo_url = decoded?.photo_url,
                     roles = decoded?.roles ?: emptyList(),
                     permissions = decoded?.permissions ?: emptyList(),
                     created_at = decoded?.created_at,
@@ -182,11 +180,11 @@ fun RegisterScreen(
         {
             // Fondo animado adaptativo
             if (!isLargeScreen) {
-                FloatingBubblesBackground(
+                AdminSchoolBackground(
                     modifier = Modifier.fillMaxSize()
                 )
             } else {
-                FloatingBubblesBackground(
+                AdminSchoolBackground(
                     modifier = Modifier.fillMaxSize()
                 )
             }

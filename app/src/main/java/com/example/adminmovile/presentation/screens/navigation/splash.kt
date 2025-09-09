@@ -249,7 +249,7 @@ fun SplashScreen(
                 ) {
                     Image(
                         painter = painterResource(R.drawable.fce),
-                        contentDescription = "Logo Capachica",
+                        contentDescription = "EP API Logo",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxSize()
@@ -265,7 +265,7 @@ fun SplashScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Capachica Turismo",
+                    text = "EP Administracion",
                     color = colorScheme.onPrimary,
                     fontSize = (screenWidth.value * 0.065f).sp,
                     fontWeight = FontWeight.Bold,
@@ -279,7 +279,7 @@ fun SplashScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Gestión 2023 - 2026",
+                    text = "Universidad Peruana Union",
                     color = colorScheme.onPrimary.copy(alpha = 0.9f),
                     fontSize = (screenWidth.value * 0.035f).sp,
                     fontWeight = FontWeight.Medium,
@@ -292,15 +292,16 @@ fun SplashScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Descubre la belleza natural",
+                    text = "Se Integro, Sé Misionero, Sé Innovador",
                     color = colorScheme.onPrimary.copy(alpha = 0.8f),
-                    fontSize = (screenWidth.value * 0.04f).sp,
+                    fontSize = (screenWidth.value * 0.028f).sp,
                     fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
                     modifier = Modifier
                         .alpha(sloganAlpha)
                         .graphicsLayer { translationY = sloganTranslationY },
                     letterSpacing = 0.5.sp
                 )
+
             }
 
             Spacer(modifier = Modifier.height(screenHeight * 0.06f))

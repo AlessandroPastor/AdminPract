@@ -2,38 +2,38 @@ package com.example.adminmovile.data.remote.api
 
 object ApiConstants {
     //const val BASE_URL = "http://172.22.8.17:8000"
-    const val BASE_URL = "http://172.22.4.20:8000" //PC PASTOR
+    const val BASE_URL = "http://192.168.1.40:8000" //PC PASTOR
     //const val BASE_URL = "http://192.172.2.101:8000" //PC JAMIL
     //const val BASE_URL = "http://192.177.1.13:8000" //PC CRISTIAN
 
     object Configuration {
 
         // ROLES
-        const val ROLES = "$BASE_URL/role"
-        const val ROLE_BY_ID = "$BASE_URL/role/{id}"
-        const val ROLE_BY_MODULE = "$BASE_URL/role/module"
+        const val ROLES = "$BASE_URL/api/role"
+        const val ROLE_BY_ID = "$BASE_URL//apirole/{id}"
+        const val ROLE_BY_MODULE = "$BASE_URL/api/role/module"
 
         // PARENTMODULE
-        const val GET_PARENT_MODULE_BY_ID = "$BASE_URL/parent-module/{id}"
-        const val UPDATE_PARENT_MODULE = "$BASE_URL/parent-module/{id}"
-        const val DELETE_PARENT_MODULE = "$BASE_URL/parent-module/{id}"
-        const val GET_PARENT_MODULE = "$BASE_URL/parent-module"
-        const val CREATE_PARENT_MODULE = "$BASE_URL/parent-module"
-        const val GET_PARENT_MODULE_LIST = "$BASE_URL/parent-module/list"
-        const val GET_PARENT_MODULE_DETAIL_LIST = "$BASE_URL/parent-module/list-detail-module-list"
+        const val GET_PARENT_MODULE_BY_ID = "$BASE_URL/api/parent-module/{id}"
+        const val UPDATE_PARENT_MODULE = "$BASE_URL/api/parent-module/{id}"
+        const val DELETE_PARENT_MODULE = "$BASE_URL/api/parent-module/{id}"
+        const val GET_PARENT_MODULE = "$BASE_URL/api/parent-module"
+        const val CREATE_PARENT_MODULE = "$BASE_URL/api/parent-module"
+        const val GET_PARENT_MODULE_LIST = "$BASE_URL/api/parent-module/list"
+        const val GET_PARENT_MODULE_DETAIL_LIST = "$BASE_URL/api/parent-module/list-detail-module-list"
 
         // MODULES
-        const val MODULES = "$BASE_URL/module"
-        const val MODULE_BY_ID = "$BASE_URL/module/{id}"
-        const val MODULE_SELECTED = "$BASE_URL/module/modules-selected/roleId/{roleId}/parentModuleId/{parentModuleId}"
-        const val MENU_ENDPOINT = "$BASE_URL/module/menu"
+        const val MODULES = "$BASE_URL/api/module"
+        const val MODULE_BY_ID = "$BASE_URL/api/module/{id}"
+        const val MODULE_SELECTED = "$BASE_URL/api/module/modules-selected/roleId/{roleId}/parentModuleId/{parentModuleId}"
+        const val MENU_ENDPOINT = "$BASE_URL/api/module/menu"
 
 
         // AUTH
-        const val LOGIN_ENDPOINT = "$BASE_URL/login"
-        const val REGISTER_ENDPOINT = "$BASE_URL/register"
-        const val UPDATE_PROFILE_ENDPOINT = "$BASE_URL/update-profile"
-        const val UPLOAD_PHOTO_ENDPOINT = "$BASE_URL/upload-photo"
+        const val LOGIN_ENDPOINT = "$BASE_URL/api/login"
+        const val REGISTER_ENDPOINT = "$BASE_URL/api/register"
+        const val UPDATE_PROFILE_ENDPOINT = "$BASE_URL/api/update-profile"
+        const val UPLOAD_PHOTO_ENDPOINT = "$BASE_URL/api/upload-photo"
 
         //SERVICE
         const val SERVICE_ENDPOINT = "$BASE_URL/service"

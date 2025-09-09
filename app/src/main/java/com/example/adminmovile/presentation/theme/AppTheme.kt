@@ -10,28 +10,23 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 object AppColors {
-    // Light Theme Colors - Paleta vibrante para aventuras
-    val Primary = Color(0xFF4285F4)        // Azul Google (confianza/profesionalismo)
-    val PrimaryVariant = Color(0xFF3367D6) // Azul más oscuro
-    val Secondary = Color(0xFF34A853)      // Verde éxito (naturaleza/aventura)
-    val SecondaryVariant = Color(0xFF1E8E3E) // Verde más oscuro
-    val Tertiary = Color(0xFFFBBC05)       // Amarillo (sol/energía)
-    val Background = Color(0xFFF8F9FA)     // Blanco neutro muy claro
-    val Surface = Color(0xFFFFFFFF)        // Blanco puro
-    val SurfaceVariant = Color(0xFFF1F3F4) // Gris muy claro
-    val Error = Color(0xFFEA4335)          // Rojo (atención/importante)
-    val OnPrimary = Color(0xFFFFFFFF)      // Blanco
-    val OnSecondary = Color(0xFFFFFFFF)    // Blanco
-    val OnBackground = Color(0xFF202124)   // Negro suave
-    val OnSurface = Color(0xFF3C4043)      // Gris oscuro
-    val OnError = Color(0xFFFFFFFF)        // Blanco
+    // 🎨 Light Theme Colors - Azul más intenso y combinable
+    val Primary = Color(0xFF3366FF)        // Azul más profundo y vibrante
+    val PrimaryVariant = Color(0xFF254EDB) // Azul intenso para contraste
+    val Secondary = Color(0xFF34A853)      // Verde aventura
+    val SecondaryVariant = Color(0xFF1E8E3E)
+    val Tertiary = Color(0xFFF6C445)       // Amarillo cálido
+    val Background = Color(0xFFF9FAFB)
+    val Surface = Color(0xFFFFFFFF)
+    val SurfaceVariant = Color(0xFFF1F3F4)
+    val Error = Color(0xFFEA4335)
+    val OnPrimary = Color(0xFFFFFFFF)
+    val OnSecondary = Color(0xFFFFFFFF)
+    val OnBackground = Color(0xFF202124)
+    val OnSurface = Color(0xFF3C4043)
+    val OnError = Color(0xFFFFFFFF)
 
-    // Colores accent para tipos de tours
-    val Adventure = Color(0xFF4285F4)      // Azul (aventura)
-    val Cultural = Color(0xFFE94235)       // Rojo cultural
-    val Nature = Color(0xFF34A853)         // Verde naturaleza
-    val Gastronomy = Color(0xFFFBBC05)     // Amarillo gastronomía
-    val Luxury = Color(0xFF9D6BF7)         // Morado lujo
+
 
     // Notification Colors Light
     val SuccessLight = Color(0xFFE6F4EA)   // Verde claro
@@ -43,28 +38,6 @@ object AppColors {
     val InfoLight = Color(0xFFE8F0FE)      // Azul claro
     val InfoTextLight = Color(0xFF1A73E8)
 
-    // Dark Theme Colors - Noche de viaje
-    val PrimaryDark = Color(0xFF8AB4F8)    // Azul claro
-    val PrimaryVariantDark = Color(0xFF669DF6)
-    val SecondaryDark = Color(0xFF81C995)  // Verde claro
-    val SecondaryVariantDark = Color(0xFF5DB075)
-    val TertiaryDark = Color(0xFFFDCF63)   // Amarillo claro
-    val BackgroundDark = Color(0xFF202124) // Gris oscuro
-    val SurfaceDark = Color(0xFF303134)    // Gris medio
-    val SurfaceVariantDark = Color(0xFF3C4043)
-    val OnPrimaryDark = Color(0xFF202124)  // Gris oscuro
-    val OnSecondaryDark = Color(0xFF202124)
-    val OnBackgroundDark = Color(0xFFE8EAED) // Gris claro
-    val OnSurfaceDark = Color(0xFFE8EAED)
-    val OnErrorDark = Color(0xFF202124)
-
-    // Colores accent dark
-    val AdventureDark = Color(0xFF8AB4F8)
-    val CulturalDark = Color(0xFFF28B82)
-    val NatureDark = Color(0xFF81C995)
-    val GastronomyDark = Color(0xFFFDCF63)
-    val LuxuryDark = Color(0xFFC7A4FF)
-
     // Notification Colors Dark
     val SuccessDark = Color(0xFF34A853)
     val SuccessTextDark = Color(0xFFCEEAD6)
@@ -74,6 +47,43 @@ object AppColors {
     val WarningTextDark = Color(0xFFFEF7E0)
     val InfoDark = Color(0xFF4285F4)
     val InfoTextDark = Color(0xFFD2E3FC)
+
+    // 🌙 Dark Theme Colors - Azul relajado de noche
+    val PrimaryDark = Color(0xFF9CC5FF)       // Azul claro, no tan fuerte
+    val PrimaryVariantDark = Color(0xFF76A7F2)
+    val SecondaryDark = Color(0xFF81C995)
+    val SecondaryVariantDark = Color(0xFF5DB075)
+    val TertiaryDark = Color(0xFFFBD97A)
+    val BackgroundDark = Color(0xFF202124)
+    val SurfaceDark = Color(0xFF303134)
+    val SurfaceVariantDark = Color(0xFF3C4043)
+    val OnPrimaryDark = Color(0xFF202124)
+    val OnSecondaryDark = Color(0xFF202124)
+    val OnBackgroundDark = Color(0xFFE8EAED)
+    val OnSurfaceDark = Color(0xFFE8EAED)
+    val OnErrorDark = Color(0xFF202124)
+
+
+
+
+
+
+
+
+    // Colores accent para tipos de tours
+    val Adventure = Color(0xFF4285F4)      // Azul (aventura)
+    val Cultural = Color(0xFFE94235)       // Rojo cultural
+    val Nature = Color(0xFF34A853)         // Verde naturaleza
+    val Gastronomy = Color(0xFFFBBC05)     // Amarillo gastronomía
+    val Luxury = Color(0xFF9D6BF7)         // Morado lujo
+    // Colores accent dark
+    val AdventureDark = Color(0xFF8AB4F8)
+    val CulturalDark = Color(0xFFF28B82)
+    val NatureDark = Color(0xFF81C995)
+    val GastronomyDark = Color(0xFFFDCF63)
+    val LuxuryDark = Color(0xFFC7A4FF)
+
+
 
     // Gradientes para tours
     val GradientAdventure = listOf(

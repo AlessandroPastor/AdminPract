@@ -11,38 +11,12 @@ data class User(
     val fullName: String?,
     val username: String,
     val code: String?,
-    val imagenUrl: String?,
+    val photo_url: String?,
     val roles: List<String>,
     val permissions: List<String>,
     val created_at: String?,
     val token: String,
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // Función para convertir UserResponse a User
 fun UserResponse.toUser(token: String): User? {
@@ -56,7 +30,7 @@ fun UserResponse.toUser(token: String): User? {
         fullName = decoded.fullName,
         username = decoded.username ?: this.username,
         code = decoded.code,
-        imagenUrl = decoded.imagenUrl,
+            photo_url = decoded.photo_url,
         roles = decoded.roles ?: emptyList(),
         permissions = decoded.permissions ?: emptyList(),
             created_at = decoded.created_at,
@@ -83,5 +57,5 @@ fun User.isUser(): Boolean {
 }
 
 fun User.hasProfileImage(): Boolean {
-    return !imagenUrl.isNullOrEmpty()
+    return !photo_url.isNullOrEmpty()
 }

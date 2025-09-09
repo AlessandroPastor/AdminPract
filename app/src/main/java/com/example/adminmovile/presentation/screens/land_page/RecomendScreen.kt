@@ -43,6 +43,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.adminmovile.presentation.components.LoadingOverlay
 import com.example.adminmovile.presentation.components.rememberNotificationState
 import com.example.adminmovile.presentation.theme.AppTheme
@@ -62,7 +63,7 @@ import com.example.adminmovile.presentation.components.showNotification
 fun RecommendationsScreen(
     onStartClick: () -> Unit,
     onClickExplorer: () -> Unit,
-    navController: NavController,
+    navController: NavHostController,
     viewModel: LangPageViewModel,
     themeViewModel: ThemeViewModel = koinInject()
 ) {
@@ -99,7 +100,6 @@ fun RecommendationsScreen(
     var isRefreshing by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
     var isSearchVisible by remember { mutableStateOf(false) }
-    val currentSection by viewModel.currentSection
     var selectedPlace by remember { mutableStateOf<Place?>(null) }
 
     // Datos fake de ejemplo
@@ -141,8 +141,6 @@ fun RecommendationsScreen(
         onStartClick = onStartClick,
         isDarkMode = isDarkMode,
         onToggleTheme = { themeViewModel.toggleTheme() },
-        currentSection = currentSection,
-        onSectionSelected = { section -> viewModel.onSectionSelected(section) },
         navController = navController,
         notificationState = notificationState,
         isRefreshing = isRefreshing,
@@ -153,9 +151,14 @@ fun RecommendationsScreen(
         }
     ) { innerPadding ->
         // 🔹 Aquí va el contenido interno con BaseScreenLayout
-        BaseScreenLayout(isLoading = stateRecommendations.isLoading,
-            contentPadding = innerPadding
-        ) {
+        BaseScreenLayout(
+            isLoading = stateRecommendations.isLoading,
+            contentPadding = innerPadding,
+            modifier = Modifier
+                .fillMaxSize()   // 👈 asegura que ocupe todo el alto/ancho
+                .padding(8.dp)   // 👈 agrega el margen deseado
+        )
+        {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)

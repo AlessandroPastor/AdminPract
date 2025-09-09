@@ -78,6 +78,7 @@
     import com.example.adminmovile.presentation.theme.ThemeViewModel
     import androidx.lifecycle.compose.collectAsStateWithLifecycle
     import androidx.navigation.NavController
+    import androidx.navigation.NavHostController
     import com.example.adminmovile.R
     import com.example.adminmovile.presentation.components.BottomNavigationBar
     import com.example.adminmovile.presentation.components.EmptyState
@@ -100,16 +101,15 @@
     fun ServiceScreen(
         onStartClick: () -> Unit,
         onClickExplorer: () -> Unit,
-        navController: NavController,
+        navController: NavHostController,
         viewModel: LangPageViewModel,
-        themeViewModel: ThemeViewModel = koinInject()
     ) {
         // --- Estados de scroll ---
         val lazyListState = rememberLazyListState()
         var isBottomNavVisible by remember { mutableStateOf(true) }
         var previousScrollOffset by remember { mutableStateOf(0) }
         var scrollDirection by remember { mutableStateOf(LangPageViewModel.ScrollDirection.NONE) }
-        val coroutineScope = rememberCoroutineScope()
+        val themeViewModel: ThemeViewModel = koinInject()
 
         // --- Estados UI ---
         val notificationState = rememberNotificationState()
@@ -118,7 +118,6 @@
         var isRefreshing by remember { mutableStateOf(false) }
         var searchQuery by remember { mutableStateOf("") }
         var isSearchVisible by remember { mutableStateOf(false) }
-        val currentSection by viewModel.currentSection
         var selectedCategory by remember { mutableStateOf<String?>(null) }
         var currentPage by remember { mutableStateOf(0) }
 
@@ -149,7 +148,6 @@
 
         // --- Inicialización ---
         LaunchedEffect(Unit) {
-            viewModel.onSectionSelected(LangPageViewModel.Sections.SERVICES)
             viewModel.loadService()
             delay(500)
             notificationState.showNotification(
@@ -233,8 +231,6 @@
             onStartClick = onStartClick,
             isDarkMode = isDarkMode,
             onToggleTheme = { themeViewModel.toggleTheme() },
-            currentSection = currentSection,
-            onSectionSelected = { section -> viewModel.onSectionSelected(section) },
             navController = navController,
             notificationState = notificationState,
             isRefreshing = isRefreshing,

@@ -76,6 +76,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.adminmovile.presentation.theme.AppTheme
 import com.example.adminmovile.presentation.theme.ThemeViewModel
 import kotlinx.coroutines.delay
@@ -93,15 +94,14 @@ import com.example.adminmovile.presentation.components.showNotification
 fun PlacesScreen(
     onStartClick: () -> Unit,
     onClickExplorer: () -> Unit,
-    navController: NavController,
+    navController: NavHostController,
     viewModel: LangPageViewModel,
-    themeViewModel: ThemeViewModel = koinInject()
 ) {
     // Estados
     val lazyListState = rememberLazyListState()
     var isBottomNavVisible by remember { mutableStateOf(true) }
     val coroutineScope = rememberCoroutineScope()
-
+    val  themeViewModel: ThemeViewModel = koinInject()
     // Variables para detectar dirección del scroll
     var previousScrollOffset by remember { mutableStateOf(0) }
     var scrollDirection by remember { mutableStateOf(LangPageViewModel.ScrollDirection.NONE) }
@@ -135,7 +135,6 @@ fun PlacesScreen(
     val notificationState = rememberNotificationState()
     val isDarkMode by themeViewModel.isDarkMode.collectAsStateWithLifecycle(false)
     val stateAso by viewModel.stateService.collectAsStateWithLifecycle()
-    val currentSection by viewModel.currentSection
 
     // Variables para manejar favoritos y refresco
     val favoriteItems = remember { mutableSetOf<String>() }
@@ -202,10 +201,6 @@ fun PlacesScreen(
                 },
                 bottomBar = {
                     BottomNavigationBar(
-                        currentSection =    currentSection,
-                        onSectionSelected = { section ->
-                            viewModel.onSectionSelected(section)
-                        },
                         navController = navController,
                         isVisible = isBottomNavVisible // Controlando la visibilidad con el estado
                     )

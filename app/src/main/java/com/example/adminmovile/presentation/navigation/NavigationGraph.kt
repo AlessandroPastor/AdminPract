@@ -11,18 +11,18 @@ import com.example.adminmovile.presentation.screens.configuration.ad.modulos_pad
 import com.example.adminmovile.presentation.screens.configuration.ad.role.RoleScreen
 import com.example.adminmovile.presentation.screens.login.LoginScreen
 import com.example.adminmovile.presentation.screens.dashboard.HomeViewModel
+import com.example.adminmovile.presentation.screens.land_page.DefaultScreenExternal
 import com.example.adminmovile.presentation.screens.land_page.EmprendedoresScreen
 import com.example.adminmovile.presentation.screens.land_page.EventsScreen
 import com.example.adminmovile.presentation.screens.land_page.ExplorerScreen
 import com.example.adminmovile.presentation.screens.land_page.LangPageViewModel
 import com.example.adminmovile.presentation.screens.land_page.ServiceScreen
-import com.example.adminmovile.presentation.screens.configuration.ad.service.ServiceHomeScreen
 import com.example.adminmovile.presentation.screens.land_page.PlacesScreen
 import com.example.adminmovile.presentation.screens.land_page.RecommendationsScreen
 import com.example.adminmovile.presentation.screens.land_page.WelcomeScreen
 import com.example.adminmovile.presentation.screens.login.ProfileEditScreen
 import com.example.adminmovile.presentation.screens.login.ProfileViewModel
-import com.example.turismomovile.presentation.screens.login.RegisterScreen
+import com.example.adminmovile.presentation.screens.login.RegisterScreen
 import com.example.adminmovile.presentation.screens.navigation.BaseScreenLayout
 import com.example.adminmovile.presentation.screens.navigation.DefaultScreen
 import com.example.adminmovile.presentation.screens.navigation.OnboardingScreen
@@ -38,9 +38,9 @@ fun NavigationGraph(
     onLogout: () -> Unit,
     sessionManager: SessionManager = koinInject()
 ) {
-    val viewModel: HomeViewModel = koinInject()
     val viewModelLangPage: LangPageViewModel = koinInject()
     val scope = rememberCoroutineScope()
+    var pendingNavigation by remember { mutableStateOf<String?>(null) }
 
     val publicRoutes = setOf(
         Routes.SPLASH,
@@ -49,14 +49,28 @@ fun NavigationGraph(
         Routes.LOGIN,
         Routes.EXPLORATE,
         Routes.REGISTER,
-        Routes.PRODUCTS,
         Routes.SERVICES,
         Routes.PLACES,
         Routes.EVENTS,
-        Routes.RECOMMENDATIONS
+        Routes.RECOMMENDATIONS,
+        Routes.PROGRESS,
+        Routes.PRACTICE
     )
 
-
+    LaunchedEffect(sessionManager) {
+        // Solo navega cuando pendingNavigation cambia
+        snapshotFlow { pendingNavigation }.collect { route ->
+            route?.let {
+                if (it != navController.currentBackStackEntry?.destination?.route) {
+                    navController.navigate(it) {
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                    pendingNavigation = null
+                }
+            }
+        }
+    }
     LaunchedEffect(navController) {
         navController.currentBackStackEntryFlow.collectLatest { backStackEntry ->
             scope.launch {
@@ -73,7 +87,7 @@ fun NavigationGraph(
                     }
                     onLogout()
                     navController.navigate(Routes.LOGIN) {
-                        popUpTo(0)
+                        popUpTo(Routes.LAND_PAGE) { inclusive = false }
                     }
                 }
             }
@@ -163,7 +177,7 @@ fun NavigationGraph(
                 navController = navController,
                 onLoginSuccess = { user ->
                     scope.launch {
-                        navigateAfterAuth(
+                            navigateAfterAuth(
                             navController = navController,
                             sessionManager = sessionManager,
                             popUpRoute = Routes.LOGIN
@@ -174,30 +188,14 @@ fun NavigationGraph(
             )
         }
 
-        // Welcome / Land Page
-        composable(Routes.LAND_PAGE) {
-            WelcomeScreen(
-                navController = navController,
-                viewModel = viewModelLangPage,
-                onStartClick = {
-                    scope.launch {
-                        val tokenValid = sessionManager.isTokenValid()
-                        if (tokenValid) {
-                            navController.navigate(Routes.HOME)
-                        } else {
-                            navController.navigate(Routes.LOGIN)
-                        }
-                    }
-                },
-                onClickExplorer = { navController.navigate(Routes.EXPLORATE) }
-            )
-        }
+
 
         // Explorer Screen
         composable(Routes.EXPLORATE) {
             ExplorerScreen(
             )
         }
+
         // Home / Menu
         composable(Routes.HOME) {
             BaseScreenLayout(
@@ -224,72 +222,39 @@ fun NavigationGraph(
 
         // BottomNavigation INFERIOR
 
-        // Productos -> EmprendedoresScreen
-        composable(Routes.PRODUCTS) {
-            EmprendedoresScreen(
+        // Welcome / Land Page
+        composable(Routes.LAND_PAGE) {
+            WelcomeScreen(
                 navController = navController,
                 viewModel = viewModelLangPage,
                 onStartClick = {
-                    navController.navigate(Routes.LOGIN) {
-                        popUpTo(Routes.LAND_PAGE) { inclusive = true }
+                    scope.launch {
+                        val tokenValid = sessionManager.isTokenValid()
+                        if (tokenValid) {
+                            navController.navigate(Routes.HOME)
+                        } else {
+                            navController.navigate(Routes.LOGIN)
+                        }
                     }
                 },
-                onClickExplorer = {
-                    navController.navigate(Routes.EXPLORATE)
-                }
-            )
-        }
-
-        // Services -> ServiceScreen
-        composable(Routes.SERVICES) {
-            ServiceScreen(
-                navController = navController,
-                viewModel = viewModelLangPage,
-                onStartClick = {
-                    navController.navigate(Routes.LOGIN) {
-                        popUpTo(Routes.LAND_PAGE) { inclusive = true }
-                    }
-                },
-                onClickExplorer = {
-                    navController.navigate(Routes.EXPLORATE)
-                })
-        }
-
-
-        // Places -> PlacesScreen
-        composable(Routes.PLACES) {
-            PlacesScreen(
-                navController = navController,
-                viewModel = viewModelLangPage,
-                onStartClick = {
-                    navController.navigate(Routes.LOGIN) {
-                        popUpTo(Routes.LAND_PAGE) { inclusive = true }
-            }
-        }, onClickExplorer = { navController.navigate(Routes.EXPLORATE) })
-    }
-
-
-        // Events -> EventsScreen
-        composable(Routes.EVENTS) {
-            EventsScreen(
-                navController = navController,
-                viewModel = viewModelLangPage,
-                onStartClick = { navController.navigate(Routes.LOGIN) { popUpTo(Routes.LAND_PAGE) { inclusive = true } } },
                 onClickExplorer = { navController.navigate(Routes.EXPLORATE) }
             )
         }
 
-        // Recommendations -> RecommendationsScreen
+        // Graficos Estadisticos
+        composable(Routes.PROGRESS) {
+            DefaultScreenExternal("Gráficos Estadísticos", navController, viewModelLangPage,)
+        }
+
+        // Practicas
+        composable(Routes.PRACTICE) {
+            DefaultScreenExternal("Prácticas", navController, viewModelLangPage)
+        }
+
+
+        // Recomendaciones
         composable(Routes.RECOMMENDATIONS) {
-            RecommendationsScreen(
-                navController = navController,
-                viewModel = viewModelLangPage,
-                onStartClick = {
-                    navController.navigate(Routes.LOGIN) {
-                        popUpTo(Routes.LAND_PAGE) { inclusive = true }
-                    } },
-                onClickExplorer = { navController.navigate(Routes.EXPLORATE) }
-            )
+            DefaultScreenExternal("Recomendaciones", navController, viewModelLangPage)
         }
 
 
@@ -334,14 +299,12 @@ private fun setupMenuRoutes(
         Routes.HomeScreen.Setup.MODULE to "Módulos",
         Routes.HomeScreen.Setup.PARENT_MODULE to "Módulos Padres",
         Routes.HomeScreen.Setup.ROLE to "Roles",
-        Routes.HomeScreen.Setup.MUNICIPALIDAD to "Municipalidad",
-        Routes.HomeScreen.Setup.ASOCIACIONES to "Asociaciones",
         Routes.HomeScreen.Setup.USUARIOS to "Usuarios",
         Routes.HomeScreen.Setup.SEPTIONS to "Secciones",
-        Routes.HomeScreen.Setup.SERVICE to "Servicios",
-        Routes.HomeScreen.Product.PRODUCTOS to "Productos",
-        Routes.HomeScreen.Product.RESERVAS to "Reservas",
-        Routes.HomeScreen.Sales.PAYMENTS to "Pagos" // Esta ruta está aquí, ¡pero asegúrate de que esté registrada también en el NavHost!
+        Routes.HomeScreen.Docs.INBOX to "Bandeja de Entrada",
+        Routes.HomeScreen.Docs.TRAMITES to "Trámites",
+        Routes.HomeScreen.Seguimiento.INDICADORES to "Indicadores",
+        Routes.HomeScreen.Seguimiento.EVALUACIONES to "Evaluaciones",
     )
 
     implementedRoutes.forEach { (route, title) ->
@@ -361,12 +324,7 @@ private fun setupMenuRoutes(
                         navController = navController,
                         paddingValues = paddingValues
                     )
-
                     Routes.HomeScreen.Setup.PARENT_MODULE -> ParentModuleScreen(
-                        navController = navController,
-                        paddingValues = paddingValues
-                    )
-                    Routes.HomeScreen.Setup.SERVICE -> ServiceHomeScreen(
                         navController = navController,
                         paddingValues = paddingValues
                     )

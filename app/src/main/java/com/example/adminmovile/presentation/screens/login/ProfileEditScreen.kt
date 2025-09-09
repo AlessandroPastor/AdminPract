@@ -81,7 +81,7 @@ fun ProfileEditScreen(
                     code = it.code ?: "",
                     username = it.username ?: "",
                     email = it.email ?: "",
-                    imagenUrl = it.imagenUrl ?: ""
+                    imagenUrl = it.photo_url ?: ""
                 )
             }
             initialLoaded = true

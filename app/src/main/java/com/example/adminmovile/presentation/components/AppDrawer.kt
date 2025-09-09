@@ -54,7 +54,6 @@ fun AppDrawer(
     val coroutineScope = rememberCoroutineScope()
     val isLoading by remember { derivedStateOf { uiState.isLoading } }
 
-    // 🎨 Contenedor principal con zIndex para evitar superposiciones
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -228,7 +227,7 @@ private fun CompactUserProfileSection(
             // Mostrar imagen de perfil o ícono por defecto
             if (user.hasProfileImage()) {
                 AsyncImage(
-                    model = user.imagenUrl,
+                    model = user.photo_url,
                     contentDescription = "Foto del perfil",
                     modifier = Modifier
                         .size(44.dp) // Avatar más pequeño

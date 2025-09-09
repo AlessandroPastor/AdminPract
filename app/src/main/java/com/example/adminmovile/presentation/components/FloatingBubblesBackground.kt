@@ -3,6 +3,7 @@ package com.example.adminmovile.presentation.components
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -18,676 +19,560 @@ import kotlin.math.sin
 import kotlin.random.Random
 
 @Composable
-fun FloatingBubblesBackground(
+fun AdminSchoolBackground(
     modifier: Modifier = Modifier,
 ) {
+    val colorScheme = MaterialTheme.colorScheme
+
     // Animaciones para elementos dinámicos
     val infiniteTransition = rememberInfiniteTransition()
 
-    // Animación del sol (pulsación suave)
-    val sunPulse by infiniteTransition.animateFloat(
-        initialValue = 1f,
-        targetValue = 1.05f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(5000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ), label = ""
-    )
-
-    // Animación de las olas
-    val waveOffset by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 100f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(3000, easing = LinearEasing)
-        ), label = ""
-    )
-
-    // Animación de barcos (balanceo)
-    val boatRocking by infiniteTransition.animateFloat(
-        initialValue = -2f,
-        targetValue = 2f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(3000, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ), label = ""
-    )
-
-    val bubbles = remember { generateBubbles(30) }
-    val bubbleAnimation by infiniteTransition.animateFloat(
+    // Animación de partículas flotantes
+    val particleAnimation by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(8000, easing = LinearEasing)
-        ),
-        label = ""
+            animation = tween(12000, easing = LinearEasing)
+        ), label = ""
     )
 
+    // Animación de ondas de datos
+    val dataWaveOffset by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 100f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(4000, easing = LinearEasing)
+        ), label = ""
+    )
+
+    // Animación de pulso de edificios
+    val buildingPulse by infiniteTransition.animateFloat(
+        initialValue = 0.95f,
+        targetValue = 1.05f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(6000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ), label = ""
+    )
+
+    // Animación de gráficos
+    val chartAnimation by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(5000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ), label = ""
+    )
+
+    val floatingElements = remember { generateFloatingElements(25) }
 
     Canvas(modifier = modifier.fillMaxSize()) {
-        // 🌅 Degradado de cielo mejorado con más colores
+        // Fondo degradado profesional usando AppTheme
         drawRect(
             brush = Brush.verticalGradient(
                 colors = listOf(
-                    Color(0xFFFFE082).copy(alpha = 0.5f), // Amarillo amanecer
-                    Color(0xFF81D4FA).copy(alpha = 0.4f), // Azul cielo claro
-                    Color(0xFF4FC3F7).copy(alpha = 0.6f), // Azul medio
-                    Color(0xFF0288D1).copy(alpha = 0.7f)  // Azul más profundo
+                    colorScheme.primary.copy(alpha = 0.1f),
+                    colorScheme.primaryContainer.copy(alpha = 0.2f),
+                    colorScheme.secondary.copy(alpha = 0.15f),
+                    colorScheme.background
                 ),
                 startY = 0f,
-                endY = size.height * 0.7f
-            )
-        )
-
-        // 🌊 Mar de fondo con degradado más realista
-        drawRect(
-            brush = Brush.verticalGradient(
-                colors = listOf(
-                    Color(0xFF4FC3F7).copy(alpha = 0.5f),
-                    Color(0xFF039BE5).copy(alpha = 0.7f),
-                    Color(0xFF0277BD).copy(alpha = 0.8f),
-                    Color(0xFF01579B).copy(alpha = 0.9f)
-                ),
-                startY = size.height * 0.6f,
                 endY = size.height
-            ),
-            topLeft = Offset(0f, size.height * 0.6f),
-            size = Size(size.width, size.height * 0.4f)
-        )
-
-        // ☀️ Sol animado con halo más pronunciado
-        drawCircle(
-            brush = Brush.radialGradient(
-                colors = listOf(
-                    Color(0xFFFFF176).copy(alpha = 0.9f),
-                    Color(0xFFFFC107).copy(alpha = 0.8f),
-                    Color(0xFFFF8F00).copy(alpha = 0.3f),
-                    Color.Transparent
-                ),
-                radius = 150f * sunPulse
-            ),
-            radius = 70f * sunPulse,
-            center = Offset(size.width * 0.8f, size.height * 0.25f),
-            blendMode = BlendMode.Screen
-        )
-
-        // 🌴 Isla tropical grande con más detalles
-        drawTropicalIsland(
-            center = Offset(size.width * 0.15f, size.height * 0.7f),
-            size = 220f
-        )
-
-        // 🏝️ Isla pequeña con más vegetación
-        drawSmallIsland(
-            center = Offset(size.width * 0.85f, size.height * 0.65f),
-            size = 100f
-        )
-
-        // ⛵ Barcos animados
-        drawSailboat(
-            center = Offset(size.width * 0.3f, size.height * 0.8f + boatRocking),
-            size = 120f,
-            sailColor = Color.White.copy(alpha = 0.9f),
-            rockingAngle = boatRocking * 0.5f
-        )
-
-        drawSailboat(
-            center = Offset(size.width * 0.7f, size.height * 0.75f + boatRocking * 0.7f),
-            size = 90f,
-            sailColor = Color(0xFFE3F2FD).copy(alpha = 0.8f),
-            rockingAngle = boatRocking * 0.3f
-        )
-
-        // 🌊 Olas animadas y mejoradas
-        repeat(7) { i ->
-            val waveY = size.height * 0.6f + (i * 25f)
-            drawWaves(
-                startX = -waveOffset + (i * 50f),
-                y = waveY,
-                width = size.width,
-                amplitude = 12f - (i * 1.5f),
-                alpha = 0.4f - (i * 0.05f)
             )
-        }
+        )
 
-        // 🐦 Gaviotas animadas
-        drawSeagulls(3, size, waveOffset)
-
-        // 🫧 Burbujas animadas
-        drawBubbles(bubbles, bubbleAnimation, size)
-    }
-}
-
-private fun generateBubbles(count: Int): List<Bubble> {
-    return List(count) {
-        Bubble(
-            x = Random.nextFloat(),
-            y = 0.6f + Random.nextFloat() * 0.4f,
-            size = 5f + Random.nextFloat() * 15f,
-            speed = 0.1f + Random.nextFloat() * 0.3f,
-            alpha = 0.2f + Random.nextFloat() * 0.5f,
-            sway = Random.nextFloat() * 20f
+        // 🏢 Campus universitario con edificios modernos
+        drawModernCampus(
+            colorScheme = colorScheme,
+            pulse = buildingPulse,
+            canvasSize = size
+        )
+        // 📊 Gráficos flotantes animados
+        drawFloatingCharts(
+            colorScheme = colorScheme,
+            animation = chartAnimation,
+            canvasSize = size
+        )
+        // 📈 Ondas de datos dinámicas
+        drawDataWaves(
+            colorScheme = colorScheme,
+            offset = dataWaveOffset,
+            canvasSize = size
         )
     }
 }
 
-
-private data class Bubble(
+private data class FloatingElement(
     val x: Float,
     val y: Float,
     val size: Float,
     val speed: Float,
     val alpha: Float,
-    val sway: Float
+    val type: ElementType,
+    val rotationSpeed: Float
 )
 
-private fun DrawScope.drawBubbles(bubbles: List<Bubble>, progress: Float, canvasSize: Size) {
-    bubbles.forEach { bubble ->
-        val currentY = (bubble.y - progress * bubble.speed) % 1.1f
-        if (currentY > 0f) {
-            val xPos = canvasSize.width * bubble.x + sin(progress * PI.toFloat() * 2f) * bubble.sway
-            val yPos = canvasSize.height * currentY
+private enum class ElementType {
+    DOCUMENT, GRAPH, GEAR, LIGHTBULB, BRIEFCASE
+}
 
-            drawCircle(
-                color = Color.White.copy(alpha = bubble.alpha),
-                radius = bubble.size,
-                center = Offset(xPos, yPos),
-                style = Stroke(width = 1f)
-            )
-
-            // Reflejo en la burbuja
-            drawCircle(
-                brush = Brush.radialGradient(
-                    colors = listOf(
-                        Color.White.copy(alpha = bubble.alpha * 0.8f),
-                        Color.Transparent
-                    ),
-                    radius = bubble.size * 0.8f,
-                    center = Offset(xPos - bubble.size * 0.3f, yPos - bubble.size * 0.3f)
-                ),
-                radius = bubble.size * 0.3f,
-                center = Offset(xPos - bubble.size * 0.2f, yPos - bubble.size * 0.2f)
-            )
-        }
+private fun generateFloatingElements(count: Int): List<FloatingElement> {
+    return List(count) {
+        FloatingElement(
+            x = Random.nextFloat(),
+            y = Random.nextFloat(),
+            size = 8f + Random.nextFloat() * 20f,
+            speed = 0.05f + Random.nextFloat() * 0.15f,
+            alpha = 0.1f + Random.nextFloat() * 0.3f,
+            type = ElementType.values()[Random.nextInt(ElementType.values().size)],
+            rotationSpeed = 0.5f + Random.nextFloat() * 1.5f
+        )
     }
 }
 
-private fun DrawScope.drawTropicalIsland(center: Offset, size: Float) {
-    // Base de arena con textura
-    drawCircle(
-        brush = Brush.radialGradient(
+private fun DrawScope.drawModernCampus(
+    colorScheme: androidx.compose.material3.ColorScheme,
+    pulse: Float,
+    canvasSize: Size
+) {
+    // Edificio principal de la escuela
+    val mainBuildingWidth = canvasSize.width * 0.25f
+    val mainBuildingHeight = canvasSize.height * 0.4f
+    val mainBuildingX = canvasSize.width * 0.15f
+    val mainBuildingY = canvasSize.height * 0.7f - mainBuildingHeight
+
+    drawRoundRect(
+        brush = Brush.verticalGradient(
             colors = listOf(
-                Color(0xFFFFF3E0).copy(alpha = 0.9f),
-                Color(0xFFFFE0B2).copy(alpha = 0.9f),
-                Color(0xFFD7CCC8).copy(alpha = 0.7f)
+                colorScheme.primaryContainer.copy(alpha = 0.8f),
+                colorScheme.primary.copy(alpha = 0.6f)
             ),
-            radius = size * 0.7f
+            startY = mainBuildingY,
+            endY = mainBuildingY + mainBuildingHeight
         ),
-        radius = size * 0.6f,
-        center = center
+        topLeft = Offset(mainBuildingX, mainBuildingY),
+        size = Size(mainBuildingWidth * pulse, mainBuildingHeight),
+        cornerRadius = CornerRadius(12f, 12f)
     )
 
-    // Vegetación más detallada
-    drawCircle(
-        brush = Brush.radialGradient(
-            colors = listOf(
-                Color(0xFF81C784).copy(alpha = 0.8f),
-                Color(0xFF4CAF50).copy(alpha = 0.7f),
-                Color(0xFF2E7D32).copy(alpha = 0.6f)
-            ),
-            radius = size * 0.4f
-        ),
-        radius = size * 0.35f,
-        center = Offset(center.x, center.y - size * 0.25f)
-    )
+    // Ventanas del edificio principal
+    repeat(4) { floor ->
+        repeat(3) { window ->
+            val windowX = mainBuildingX + (window + 1) * mainBuildingWidth * pulse / 4f - 15f
+            val windowY = mainBuildingY + (floor + 1) * mainBuildingHeight / 5f - 10f
 
-    // Palmeras mejoradas
-    repeat(3) { i ->
-        val palmX = center.x + (i - 1) * size * 0.25f
-        val palmY = center.y - size * 0.15f
-
-        // Tronco con textura
-        drawRoundRect(
-            color = Color(0xFF6D4C41).copy(alpha = 0.9f),
-            topLeft = Offset(palmX - size * 0.02f, palmY),
-            size = Size(size * 0.04f, size * 0.4f),
-            cornerRadius = CornerRadius(size * 0.02f, size * 0.02f)
-        )
-
-        // Hojas más realistas
-        repeat(7) { j ->
-            val leafAngle = j * 51.4f - 90f
-            val leafLength = size * 0.25f
-            val leafEnd = Offset(
-                palmX + size * 0.02f + leafLength * cos(leafAngle * PI / 180).toFloat(),
-                palmY - size * 0.05f + leafLength * sin(leafAngle * PI / 180).toFloat()
+            drawRoundRect(
+                color = colorScheme.onPrimary.copy(alpha = 0.9f),
+                topLeft = Offset(windowX, windowY),
+                size = Size(30f, 20f),
+                cornerRadius = CornerRadius(4f, 4f)
             )
 
-            val leafPath = Path().apply {
-                moveTo(palmX + size * 0.02f, palmY - size * 0.05f)
-                quadraticBezierTo(
-                    palmX + size * 0.02f + leafLength * 0.5f * cos(leafAngle * PI / 180).toFloat(),
-                    palmY - size * 0.05f + leafLength * 0.5f * sin(leafAngle * PI / 180).toFloat(),
-                    leafEnd.x,
-                    leafEnd.y
+            // Luz en algunas ventanas
+            if (Random.nextFloat() > 0.6f) {
+                drawRoundRect(
+                    color = colorScheme.tertiary.copy(alpha = 0.7f),
+                    topLeft = Offset(windowX, windowY),
+                    size = Size(30f, 20f),
+                    cornerRadius = CornerRadius(4f, 4f)
                 )
             }
-
-            drawPath(
-                path = leafPath,
-                color = Color(0xFF4CAF50).copy(alpha = 0.8f),
-                style = Stroke(width = size * 0.01f)
-            )
-
-            // Detalle de las hojas
-            drawCircle(
-                color = Color(0xFF8BC34A).copy(alpha = 0.6f),
-                radius = size * 0.03f,
-                center = leafEnd
-            )
         }
     }
 
-    // Sombras bajo las palmeras
-    drawCircle(
-        color = Color(0xFF000000).copy(alpha = 0.2f),
-        radius = size * 0.2f,
-        center = Offset(center.x, center.y + size * 0.1f),
-        blendMode = BlendMode.Multiply
-    )
-}
+    // Edificio secundario
+    val secBuildingWidth = canvasSize.width * 0.2f
+    val secBuildingHeight = canvasSize.height * 0.3f
+    val secBuildingX = canvasSize.width * 0.7f
+    val secBuildingY = canvasSize.height * 0.7f - secBuildingHeight
 
-private fun DrawScope.drawSmallIsland(center: Offset, size: Float) {
-    // Isla pequeña con más detalle
-    drawCircle(
-        brush = Brush.radialGradient(
-            colors = listOf(
-                Color(0xFF9CCC65).copy(alpha = 0.7f),
-                Color(0xFF7CB342).copy(alpha = 0.6f),
-                Color(0xFF558B2F).copy(alpha = 0.5f)
-            ),
-            radius = size * 0.5f
-        ),
-        radius = size * 0.45f,
-        center = center
-    )
-
-    // Palmera pequeña mejorada
-    // Tronco
     drawRoundRect(
-        color = Color(0xFF5D4037).copy(alpha = 0.8f),
-        topLeft = Offset(center.x - size * 0.02f, center.y - size * 0.1f),
-        size = Size(size * 0.04f, size * 0.25f),
-        cornerRadius = CornerRadius(size * 0.02f, size * 0.02f)
+        brush = Brush.verticalGradient(
+            colors = listOf(
+                colorScheme.secondaryContainer.copy(alpha = 0.7f),
+                colorScheme.secondary.copy(alpha = 0.5f)
+            ),
+            startY = secBuildingY,
+            endY = secBuildingY + secBuildingHeight
+        ),
+        topLeft = Offset(secBuildingX, secBuildingY),
+        size = Size(secBuildingWidth, secBuildingHeight * pulse),
+        cornerRadius = CornerRadius(8f, 8f)
     )
 
-    // Hojas
-    repeat(5) { j ->
-        val leafAngle = j * 72f - 90f
-        val leafLength = size * 0.2f
-        val leafEnd = Offset(
-            center.x + leafLength * cos(leafAngle * PI / 180).toFloat(),
-            center.y - size * 0.1f + leafLength * sin(leafAngle * PI / 180).toFloat()
-        )
+    // Entrada principal con columnas
+    val entranceWidth = mainBuildingWidth * 0.6f
+    val entranceHeight = 40f
+    val entranceX = mainBuildingX + (mainBuildingWidth * pulse - entranceWidth) / 2f
+    val entranceY = canvasSize.height * 0.7f - entranceHeight
 
-        drawLine(
-            color = Color(0xFF8BC34A).copy(alpha = 0.8f),
-            start = Offset(center.x, center.y - size * 0.1f),
-            end = leafEnd,
-            strokeWidth = size * 0.01f
+    drawRoundRect(
+        color = colorScheme.surface.copy(alpha = 0.9f),
+        topLeft = Offset(entranceX, entranceY),
+        size = Size(entranceWidth, entranceHeight),
+        cornerRadius = CornerRadius(6f, 6f)
+    )
+
+    // Columnas de la entrada
+    repeat(3) { i ->
+        val columnX = entranceX + (i + 0.5f) * entranceWidth / 3f - 3f
+        drawRoundRect(
+            color = colorScheme.onSurface.copy(alpha = 0.8f),
+            topLeft = Offset(columnX, entranceY - 20f),
+            size = Size(6f, 60f),
+            cornerRadius = CornerRadius(3f, 3f)
         )
     }
 }
 
-private fun DrawScope.drawSailboat(
-    center: Offset,
-    size: Float,
-    sailColor: Color,
-    rockingAngle: Float = 0f
+private fun DrawScope.drawFloatingCharts(
+    colorScheme: androidx.compose.material3.ColorScheme,
+    animation: Float,
+    canvasSize: Size
 ) {
-    withTransform({
-        rotate(rockingAngle, center)
-    }) {
-        // Casco del barco mejorado
-        val hullPath = Path().apply {
-            moveTo(center.x - size * 0.4f, center.y)
-            quadraticBezierTo(
-                center.x - size * 0.4f, center.y + size * 0.2f,
-                center.x, center.y + size * 0.15f
-            )
-            quadraticBezierTo(
-                center.x + size * 0.4f, center.y + size * 0.2f,
-                center.x + size * 0.4f, center.y
-            )
-            lineTo(center.x + size * 0.3f, center.y - size * 0.05f)
-            lineTo(center.x - size * 0.3f, center.y - size * 0.05f)
-            close()
-        }
+    // Gráfico de barras flotante
+    val chartX = canvasSize.width * 0.6f
+    val chartY = canvasSize.height * 0.3f
+    val barWidth = 12f
+    val maxBarHeight = 80f * animation
 
-        drawPath(
-            path = hullPath,
-            brush = Brush.linearGradient(
-                colors = listOf(
-                    Color(0xFF795548).copy(alpha = 0.9f),
-                    Color(0xFF5D4037).copy(alpha = 0.9f)
-                ),
-                start = Offset(center.x, center.y - size * 0.05f),
-                end = Offset(center.x, center.y + size * 0.15f)
-            )
-        )
+    repeat(5) { i ->
+        val barHeight = maxBarHeight * (0.3f + Random.nextFloat() * 0.7f)
+        val barX = chartX + i * (barWidth + 8f)
 
-        // Detalles del casco
-        drawLine(
-            color = Color(0x4A000000),
-            start = Offset(center.x - size * 0.35f, center.y + size * 0.05f),
-            end = Offset(center.x + size * 0.35f, center.y + size * 0.05f),
-            strokeWidth = 1f
-        )
-
-        // Mástil con sombra
-        drawLine(
+        drawRoundRect(
             brush = Brush.verticalGradient(
                 colors = listOf(
-                    Color(0xFF3E2723).copy(alpha = 0.9f),
-                    Color(0xFF5D4037).copy(alpha = 0.9f)
+                    colorScheme.tertiary.copy(alpha = 0.8f),
+                    colorScheme.tertiaryContainer.copy(alpha = 0.6f)
                 ),
-                startY = center.y - size * 0.05f,
-                endY = center.y - size * 0.5f
+                startY = chartY - barHeight,
+                endY = chartY
             ),
-            start = Offset(center.x, center.y - size * 0.05f),
-            end = Offset(center.x, center.y - size * 0.5f),
-            strokeWidth = size * 0.02f
+            topLeft = Offset(barX, chartY - barHeight),
+            size = Size(barWidth, barHeight),
+            cornerRadius = CornerRadius(4f, 4f)
+        )
+    }
+
+    // Gráfico circular
+    val pieChartCenter = Offset(canvasSize.width * 0.8f, canvasSize.height * 0.5f)
+    val pieRadius = 40f
+
+    val segments = listOf(0.35f, 0.25f, 0.4f)
+    var currentAngle = 0f
+
+    segments.forEachIndexed { index, segment ->
+        val sweepAngle = 360f * segment * animation
+        val colors = listOf(
+            colorScheme.primary.copy(alpha = 0.7f),
+            colorScheme.secondary.copy(alpha = 0.7f),
+            colorScheme.tertiary.copy(alpha = 0.7f)
         )
 
-        // Vela principal con más detalle
-        val sailPath = Path().apply {
-            moveTo(center.x, center.y - size * 0.5f)
-            quadraticBezierTo(
-                center.x + size * 0.35f, center.y - size * 0.35f,
-                center.x + size * 0.3f, center.y - size * 0.1f
-            )
-            lineTo(center.x, center.y - size * 0.05f)
-            close()
-        }
-
-        drawPath(
-            path = sailPath,
-            brush = Brush.linearGradient(
-                colors = listOf(
-                    sailColor,
-                    sailColor.copy(alpha = sailColor.alpha * 0.8f)
-                ),
-                start = Offset(center.x, center.y - size * 0.5f),
-                end = Offset(center.x + size * 0.3f, center.y - size * 0.1f)
-            )
+        drawArc(
+            color = colors[index],
+            startAngle = currentAngle,
+            sweepAngle = sweepAngle,
+            useCenter = true,
+            topLeft = Offset(pieChartCenter.x - pieRadius, pieChartCenter.y - pieRadius),
+            size = Size(pieRadius * 2, pieRadius * 2)
         )
-
-        // Costuras en la vela
-        drawLine(
-            color = sailColor.copy(alpha = sailColor.alpha * 0.7f),
-            start = Offset(center.x + size * 0.05f, center.y - size * 0.45f),
-            end = Offset(center.x + size * 0.1f, center.y - size * 0.15f),
-            strokeWidth = 1f
-        )
-        drawLine(
-            color = sailColor.copy(alpha = sailColor.alpha * 0.7f),
-            start = Offset(center.x + size * 0.15f, center.y - size * 0.4f),
-            end = Offset(center.x + size * 0.2f, center.y - size * 0.2f),
-            strokeWidth = 1f
-        )
-
-        // Bandera en el mástil
-        val flagPath = Path().apply {
-            moveTo(center.x, center.y - size * 0.55f)
-            lineTo(center.x - size * 0.1f, center.y - size * 0.5f)
-            lineTo(center.x, center.y - size * 0.45f)
-            close()
-        }
-        drawPath(
-            path = flagPath,
-            color = Color(0xFFE53935).copy(alpha = 0.9f)
-        )
-
-        // Reflejo en el agua
-        withTransform({
-            scale(
-                scaleX = 1f,
-                scaleY = -0.3f,
-                pivot = Offset(center.x, center.y + size * 0.15f)
-            )
-            translate(top = size * 0.4f)
-        }) {
-            drawPath(
-                path = hullPath,
-                color = Color(0xFF8D6E63).copy(alpha = 0.5f)
-            )
-            drawPath(
-                path = sailPath,
-                color = sailColor.copy(alpha = 0.3f)
-            )
-        }
+        currentAngle += sweepAngle
     }
 }
 
-private fun DrawScope.drawWaves(startX: Float, y: Float, width: Float, amplitude: Float, alpha: Float) {
-    val path = Path()
-    path.moveTo(startX, y)
+private fun DrawScope.drawAcademicElements(
+    colorScheme: androidx.compose.material3.ColorScheme,
+    canvasSize: Size
+) {
+    // Diploma/Certificado
+    val diplomaX = canvasSize.width * 0.05f
+    val diplomaY = canvasSize.height * 0.2f
 
-    val waveLength = width / 5f
-    for (i in 0..5) {
-        val x = startX + i * waveLength
-        val waveY = y + amplitude * sin(i * PI / 2).toFloat()
-        if (i == 0) {
-            path.moveTo(x, waveY)
-        } else {
-            path.quadraticBezierTo(
-                x - waveLength/2, y + amplitude * sin((i-0.5) * PI / 2).toFloat(),
-                x, waveY
-            )
-        }
-    }
-
-    drawPath(
-        path = path,
-        color = Color.White.copy(alpha = alpha),
-        style = Stroke(width = 2f, cap = StrokeCap.Round)
+    drawRoundRect(
+        color = colorScheme.surfaceVariant.copy(alpha = 0.8f),
+        topLeft = Offset(diplomaX, diplomaY),
+        size = Size(120f, 80f),
+        cornerRadius = CornerRadius(8f, 8f)
     )
 
-    // Espuma de las olas
-    val foamPath = Path().apply {
-        moveTo(startX, y)
-        for (i in 0..5) {
-            val x = startX + i * waveLength
-            val waveY = y + amplitude * sin(i * PI / 2).toFloat() * 0.7f
-            if (i == 0) {
-                moveTo(x, waveY)
-            } else {
-                quadraticBezierTo(
-                    x - waveLength/2, y + amplitude * sin((i-0.5) * PI / 2).toFloat() * 0.7f,
-                    x, waveY
-                )
+    // Marco del diploma
+    drawRoundRect(
+        color = colorScheme.outline.copy(alpha = 0.6f),
+        topLeft = Offset(diplomaX + 5f, diplomaY + 5f),
+        size = Size(110f, 70f),
+        cornerRadius = CornerRadius(6f, 6f),
+        style = Stroke(width = 2f)
+    )
+
+    // Libro abierto
+    val bookX = canvasSize.width * 0.1f
+    val bookY = canvasSize.height * 0.5f
+
+    // Páginas del libro
+    drawRoundRect(
+        color = colorScheme.surface.copy(alpha = 0.9f),
+        topLeft = Offset(bookX, bookY),
+        size = Size(80f, 60f),
+        cornerRadius = CornerRadius(4f, 4f)
+    )
+
+    // Líneas del texto
+    repeat(4) { line ->
+        drawLine(
+            color = colorScheme.onSurface.copy(alpha = 0.3f),
+            start = Offset(bookX + 10f, bookY + 15f + line * 10f),
+            end = Offset(bookX + 70f, bookY + 15f + line * 10f),
+            strokeWidth = 1f
+        )
+    }
+}
+
+private fun DrawScope.drawDataWaves(
+    colorScheme: androidx.compose.material3.ColorScheme,
+    offset: Float,
+    canvasSize: Size
+) {
+    repeat(3) { waveIndex ->
+        val waveY = canvasSize.height * (0.8f + waveIndex * 0.05f)
+        val amplitude = 15f - waveIndex * 3f
+        val alpha = 0.3f - waveIndex * 0.08f
+
+        val path = Path()
+        path.moveTo(-offset + waveIndex * 30f, waveY)
+
+        for (x in 0..canvasSize.width.toInt() step 20) {
+            val actualX = x - offset + waveIndex * 30f
+            val waveY2 = waveY + amplitude * sin((actualX / 50f) * PI).toFloat()
+            path.lineTo(actualX, waveY2)
+        }
+
+        drawPath(
+            path = path,
+            color = colorScheme.primary.copy(alpha = alpha),
+            style = Stroke(width = 2f, cap = StrokeCap.Round)
+        )
+    }
+}
+
+private fun DrawScope.drawKnowledgeParticles(
+    elements: List<FloatingElement>,
+    animation: Float,
+    colorScheme: androidx.compose.material3.ColorScheme,
+    canvasSize: Size
+) {
+    elements.forEach { element ->
+        val currentY = (element.y - animation * element.speed) % 1.1f
+        if (currentY > 0f && currentY < 1f) {
+            val xPos = canvasSize.width * element.x +
+                    sin(animation * PI.toFloat() * element.rotationSpeed) * 20f
+            val yPos = canvasSize.height * currentY
+            val rotation = animation * element.rotationSpeed * 360f
+
+            withTransform({
+                rotate(rotation, Offset(xPos, yPos))
+            }) {
+                when (element.type) {
+                    ElementType.DOCUMENT -> drawDocument(
+                        center = Offset(xPos, yPos),
+                        size = element.size,
+                        color = colorScheme.primary.copy(alpha = element.alpha)
+                    )
+                    ElementType.GRAPH -> drawMiniGraph(
+                        center = Offset(xPos, yPos),
+                        size = element.size,
+                        color = colorScheme.secondary.copy(alpha = element.alpha)
+                    )
+                    ElementType.GEAR -> drawGear(
+                        center = Offset(xPos, yPos),
+                        size = element.size,
+                        color = colorScheme.tertiary.copy(alpha = element.alpha)
+                    )
+                    ElementType.LIGHTBULB -> drawLightbulb(
+                        center = Offset(xPos, yPos),
+                        size = element.size,
+                        color = colorScheme.secondary.copy(alpha = element.alpha)
+                    )
+                    ElementType.BRIEFCASE -> drawBriefcase(
+                        center = Offset(xPos, yPos),
+                        size = element.size,
+                        color = colorScheme.primary.copy(alpha = element.alpha)
+                    )
+                }
             }
         }
     }
-
-    drawPath(
-        path = foamPath,
-        color = Color.White.copy(alpha = alpha * 1.5f),
-        style = Stroke(width = 1f, cap = StrokeCap.Round)
-    )
 }
 
-private fun DrawScope.drawCloud(center: Offset, size: Float, speed: Float = 0f) {
-    val cloudColor = Color.White.copy(alpha = 0.85f)
+private fun DrawScope.drawDocument(center: Offset, size: Float, color: Color) {
+    drawRoundRect(
+        color = color,
+        topLeft = Offset(center.x - size/2, center.y - size/2),
+        size = Size(size * 0.7f, size),
+        cornerRadius = CornerRadius(2f, 2f)
+    )
 
-    // Nube con más detalles y sombras
+    // Líneas del documento
+    repeat(3) { line ->
+        drawLine(
+            color = color.copy(alpha = color.alpha * 0.7f),
+            start = Offset(center.x - size/3, center.y - size/3 + line * size/6),
+            end = Offset(center.x + size/4, center.y - size/3 + line * size/6),
+            strokeWidth = 1f
+        )
+    }
+}
+
+private fun DrawScope.drawMiniGraph(center: Offset, size: Float, color: Color) {
+    // Base del gráfico
+    drawRect(
+        color = color.copy(alpha = 0.3f),
+        topLeft = Offset(center.x - size/2, center.y - size/2),
+        size = Size(size, size)
+    )
+
+    // Barras pequeñas
+    repeat(3) { bar ->
+        val barHeight = size * (0.2f + bar * 0.2f)
+        drawRect(
+            color = color,
+            topLeft = Offset(center.x - size/2 + bar * size/3 + size/6, center.y + size/2 - barHeight),
+            size = Size(size/6, barHeight)
+        )
+    }
+}
+
+private fun DrawScope.drawGear(center: Offset, size: Float, color: Color) {
     drawCircle(
-        brush = Brush.radialGradient(
-            colors = listOf(
-                cloudColor,
-                cloudColor.copy(alpha = 0.7f)
+        color = color,
+        radius = size/2,
+        center = center,
+        style = Stroke(width = size/8)
+    )
+
+    // Dientes del engranaje
+    repeat(8) { tooth ->
+        val angle = tooth * 45f
+        val startRadius = size/2
+        val endRadius = size/1.5f
+
+        drawLine(
+            color = color,
+            start = Offset(
+                center.x + startRadius * cos(angle * PI / 180).toFloat(),
+                center.y + startRadius * sin(angle * PI / 180).toFloat()
             ),
-            radius = size * 0.4f
-        ),
-        radius = size * 0.35f,
+            end = Offset(
+                center.x + endRadius * cos(angle * PI / 180).toFloat(),
+                center.y + endRadius * sin(angle * PI / 180).toFloat()
+            ),
+            strokeWidth = size/10
+        )
+    }
+
+    // Centro del engranaje
+    drawCircle(
+        color = color,
+        radius = size/6,
         center = center
     )
-
-    drawCircle(
-        brush = Brush.radialGradient(
-            colors = listOf(
-                cloudColor,
-                cloudColor.copy(alpha = 0.7f)
-            ),
-            radius = size * 0.3f
-        ),
-        radius = size * 0.3f,
-        center = Offset(center.x - size * 0.25f, center.y + size * 0.1f)
-    )
-
-    drawCircle(
-        brush = Brush.radialGradient(
-            colors = listOf(
-                cloudColor,
-                cloudColor.copy(alpha = 0.7f)
-            ),
-            radius = size * 0.3f
-        ),
-        radius = size * 0.3f,
-        center = Offset(center.x + size * 0.25f, center.y + size * 0.1f)
-    )
-
-    drawCircle(
-        brush = Brush.radialGradient(
-            colors = listOf(
-                cloudColor,
-                cloudColor.copy(alpha = 0.7f)
-            ),
-            radius = size * 0.25f
-        ),
-        radius = size * 0.25f,
-        center = Offset(center.x - size * 0.15f, center.y - size * 0.15f)
-    )
-
-    drawCircle(
-        brush = Brush.radialGradient(
-            colors = listOf(
-                cloudColor,
-                cloudColor.copy(alpha = 0.7f)
-            ),
-            radius = size * 0.25f
-        ),
-        radius = size * 0.25f,
-        center = Offset(center.x + size * 0.15f, center.y - size * 0.15f)
-    )
-
-    // Sombra inferior de la nube
-    drawCircle(
-        color = Color(0x000000).copy(alpha = 0.1f),
-        radius = size * 0.3f,
-        center = Offset(center.x, center.y + size * 0.2f),
-        blendMode = BlendMode.Multiply
-    )
 }
 
-private fun DrawScope.drawSeagulls(count: Int, size: Size, offset: Float) {
-    repeat(count) { i ->
-        val progress = (offset / 100f + i * 0.3f) % 1f
-        val xPos = size.width * (0.2f + progress * 0.7f)
-        val yPos = size.height * (0.2f + sin(progress * PI.toFloat() * 4f) * 0.05f)
+private fun DrawScope.drawLightbulb(center: Offset, size: Float, color: Color) {
+    // Bulbo
+    drawCircle(
+        color = color,
+        radius = size/2.5f,
+        center = Offset(center.x, center.y - size/6)
+    )
 
-        // Gaviota con más detalles
-        val wingAngle = sin(progress * PI.toFloat() * 8f) * 15f
+    // Base
+    drawRect(
+        color = color.copy(alpha = 0.8f),
+        topLeft = Offset(center.x - size/4, center.y + size/6),
+        size = Size(size/2, size/4)
+    )
 
-        // Cuerpo
+    // Rayos de luz
+    repeat(4) { ray ->
+        val angle = ray * 90f
         drawLine(
-            color = Color.White.copy(alpha = 0.9f),
-            start = Offset(xPos - 8f, yPos),
-            end = Offset(xPos + 8f, yPos),
-            strokeWidth = 2f
-        )
-
-        // Alas
-        drawLine(
-            color = Color.White.copy(alpha = 0.9f),
-            start = Offset(xPos, yPos),
-            end = Offset(xPos - 12f, yPos - 5f + wingAngle),
-            strokeWidth = 2f
-        )
-        drawLine(
-            color = Color.White.copy(alpha = 0.9f),
-            start = Offset(xPos, yPos),
-            end = Offset(xPos + 12f, yPos - 5f - wingAngle),
+            color = color.copy(alpha = 0.6f),
+            start = Offset(
+                center.x + (size/2) * cos(angle * PI / 180).toFloat(),
+                center.y - size/6 + (size/2) * sin(angle * PI / 180).toFloat()
+            ),
+            end = Offset(
+                center.x + (size/1.3f) * cos(angle * PI / 180).toFloat(),
+                center.y - size/6 + (size/1.3f) * sin(angle * PI / 180).toFloat()
+            ),
             strokeWidth = 2f
         )
     }
 }
 
-private fun DrawScope.drawSparkles(count: Int, size: Size) {
-    repeat(count) { i ->
-        val x = size.width * (0.1f + i * 0.08f + Random.nextFloat() * 0.05f)
-        val y = size.height * (0.65f + Random.nextFloat() * 0.25f)
-        val sparkleSize = 5f + Random.nextFloat() * 15f
-        val alpha = 0.6f + Random.nextFloat() * 0.4f
+private fun DrawScope.drawBriefcase(center: Offset, size: Float, color: Color) {
+    // Cuerpo del maletín
+    drawRoundRect(
+        color = color,
+        topLeft = Offset(center.x - size/2, center.y - size/3),
+        size = Size(size, size * 2/3),
+        cornerRadius = CornerRadius(size/10, size/10)
+    )
 
-        // Destello principal
-        drawCircle(
-            brush = Brush.radialGradient(
-                colors = listOf(
-                    Color.White.copy(alpha = alpha),
-                    Color.White.copy(alpha = alpha * 0.5f),
-                    Color.Transparent
-                ),
-                radius = sparkleSize * 0.7f
-            ),
-            radius = sparkleSize * 0.5f,
-            center = Offset(x, y),
-            blendMode = BlendMode.Plus
-        )
+    // Asa
+    drawArc(
+        color = color,
+        startAngle = 180f,
+        sweepAngle = 180f,
+        useCenter = false,
+        topLeft = Offset(center.x - size/4, center.y - size/2),
+        size = Size(size/2, size/3),
+        style = Stroke(width = size/12)
+    )
 
-        // Rayos del destello
-        repeat(4) { j ->
-            val angle = j * 45f
-            val length = sparkleSize * 0.8f
-            drawLine(
-                color = Color.White.copy(alpha = alpha),
-                start = Offset(x, y),
-                end = Offset(
-                    x + length * cos(angle * PI / 180).toFloat(),
-                    y + length * sin(angle * PI / 180).toFloat()
-                ),
-                strokeWidth = 2f,
-                cap = StrokeCap.Round
+    // Cerradura
+    drawCircle(
+        color = color.copy(alpha = 0.8f),
+        radius = size/12,
+        center = Offset(center.x, center.y)
+    )
+}
+
+private fun DrawScope.drawAdminIcons(
+    colorScheme: androidx.compose.material3.ColorScheme,
+    canvasSize: Size,
+    offset: Float
+) {
+    // Calculator flotante
+    val calcX = canvasSize.width * 0.9f
+    val calcY = canvasSize.height * 0.3f + sin(offset / 50f) * 10f
+
+    drawRoundRect(
+        color = colorScheme.surfaceVariant.copy(alpha = 0.6f),
+        topLeft = Offset(calcX - 25f, calcY - 30f),
+        size = Size(50f, 60f),
+        cornerRadius = CornerRadius(6f, 6f)
+    )
+
+    // Pantalla de la calculadora
+    drawRoundRect(
+        color = colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+        topLeft = Offset(calcX - 20f, calcY - 25f),
+        size = Size(40f, 15f),
+        cornerRadius = CornerRadius(2f, 2f)
+    )
+
+    // Botones
+    repeat(3) { row ->
+        repeat(3) { col ->
+            drawCircle(
+                color = colorScheme.outline.copy(alpha = 0.4f),
+                radius = 3f,
+                center = Offset(calcX - 15f + col * 10f, calcY - 5f + row * 8f)
             )
         }
     }
 }
-
-
-/*AnimatedVisibility(
-visible = logoVisibility.value,
-enter = fadeIn(animationSpec = tween(1000)) + slideInVertically { -150 }
-) {
-    Box(
-        modifier = Modifier
-            .size(150.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.1f))
-            .shadow(10.dp, shape = CircleShape)
-    ) {
-        Image(
-            painter = painterResource(R.drawable.capachica), // Cambia a tu logo
-            contentDescription = "Logo de Capachica Tours",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .matchParentSize()
-                .clip(CircleShape)
-                .graphicsLayer(
-                    scaleX = glowAnim,
-                    scaleY = glowAnim
-                )
-        )
-    }
-}
-
-Spacer(modifier = Modifier.height(20.dp))*/

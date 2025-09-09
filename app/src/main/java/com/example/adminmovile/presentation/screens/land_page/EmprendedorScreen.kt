@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.adminmovile.presentation.components.BottomNavigationBar
 import com.example.adminmovile.presentation.components.MainTopAppBar
 import com.example.adminmovile.presentation.components.NotificationHost
@@ -26,18 +27,14 @@ import org.koin.compose.koinInject
 fun EmprendedoresScreen(
     onStartClick: () -> Unit,
     onClickExplorer: () -> Unit,
-    navController: NavController,
+    navController: NavHostController,
     viewModel: LangPageViewModel,
-    themeViewModel: ThemeViewModel = koinInject()
 ) {
-    // Estados para el LazyColumn y scroll
+    val  themeViewModel: ThemeViewModel = koinInject()
     val lazyListState = rememberLazyListState()
     var isBottomNavVisible by remember { mutableStateOf(true) }
-    // Variables para detectar dirección del scroll
     var previousScrollOffset by remember { mutableStateOf(0) }
     var scrollDirection by remember { mutableStateOf(LangPageViewModel.ScrollDirection.NONE) }
-
-    // Detectar dirección del scroll mejorado
     LaunchedEffect(lazyListState) {
         snapshotFlow {
             lazyListState.firstVisibleItemScrollOffset
@@ -71,13 +68,11 @@ fun EmprendedoresScreen(
     var isRefreshing by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
     var isSearchVisible by remember { mutableStateOf(false) }
-    val currentSection by viewModel.currentSection
 
     // Efectos
     LaunchedEffect(Unit) {
-        viewModel.onSectionSelected(LangPageViewModel.Sections.PRODUCTS)
-        viewModel.loadService()
 
+        viewModel.loadService()
         // Mostrar notificación de bienvenida
         notificationState.showNotification(
             message = "Productos y Servicios de las familias",
@@ -114,12 +109,8 @@ fun EmprendedoresScreen(
                 },
             bottomBar = {
                 BottomNavigationBar(
-                    currentSection = currentSection,
-                    onSectionSelected = { section ->
-                            viewModel.onSectionSelected(section)
-                        },
                     navController = navController,
-                    isVisible = isBottomNavVisible // Controlando la visibilidad con el estado
+                    isVisible = isBottomNavVisible
                     )
                 }
             ) { innerPadding ->

@@ -34,7 +34,7 @@ class AuthRepositoryImpl(
                         fullName = "${u.name} ${u.last_name}",
                         username = u.username,
                         code = null,
-                        imagenUrl = null,
+                        photo_url = null,
                         roles = loginResponse.data.roles,
                         permissions = loginResponse.data.permissions,
                         created_at = null,

@@ -44,7 +44,7 @@ class SessionManager(private val dataStore: DataStore<Preferences>) {
             prefs[KEY_USER_FULL_NAME] = user.fullName ?: ""
             prefs[KEY_USER_USERNAME] = user.username
             prefs[KEY_USER_CODE] = user.code ?: ""
-            prefs[KEY_USER_IMAGEN_URL] = user.imagenUrl ?: ""
+            prefs[KEY_USER_IMAGEN_URL] = user.photo_url ?: ""
             prefs[KEY_USER_ROLES] = user.roles.joinToString(",")
             prefs[KEY_USER_PERMISSIONS] = user.permissions.joinToString(",")
             prefs[KEY_USER_CREATED_AT] = user.created_at ?: ""
@@ -67,7 +67,7 @@ class SessionManager(private val dataStore: DataStore<Preferences>) {
         val fullName = prefs[KEY_USER_FULL_NAME]
         val username = prefs[KEY_USER_USERNAME] ?: ""
         val code = prefs[KEY_USER_CODE]
-        val imagenUrl = prefs[KEY_USER_IMAGEN_URL]
+        val photo_url = prefs[KEY_USER_IMAGEN_URL]
         val roles = prefs[KEY_USER_ROLES]?.split(",") ?: emptyList()
         val permissions = prefs[KEY_USER_PERMISSIONS]?.split(",") ?: emptyList()
         val created_at = prefs[KEY_USER_CREATED_AT]
@@ -81,7 +81,7 @@ class SessionManager(private val dataStore: DataStore<Preferences>) {
                 fullName = fullName,
                 username = username,
                 code = code,
-                imagenUrl = imagenUrl,
+                photo_url = photo_url,
                 roles = roles,
                 permissions = permissions,
                 created_at = created_at,
@@ -109,13 +109,6 @@ class SessionManager(private val dataStore: DataStore<Preferences>) {
         }
         cachedToken = null
         cachedExp = null
-    }
-
-    // ✅ Comprobar si el usuario ha iniciado sesión
-    suspend fun isLoggedIn(): Boolean {
-        return dataStore.data.map { prefs ->
-            prefs[KEY_IS_LOGGED_IN] ?: false
-        }.first()
     }
 
     // ✅ Establecer si se completó el onboarding

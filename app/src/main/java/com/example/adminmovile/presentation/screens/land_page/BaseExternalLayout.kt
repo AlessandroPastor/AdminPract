@@ -18,6 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.adminmovile.presentation.components.BottomNavigationBar
 import com.example.adminmovile.presentation.components.MainTopAppBar
 import com.example.adminmovile.presentation.components.NotificationHost
@@ -25,13 +27,8 @@ import com.example.adminmovile.presentation.components.NotificationState
 import com.example.adminmovile.presentation.components.PullToRefreshComponent
 import com.example.adminmovile.presentation.navigation.Routes
 import com.example.adminmovile.presentation.screens.navigation.LoadingScreen
-import com.example.adminmovile.presentation.theme.AppColors
 import com.example.adminmovile.presentation.theme.AppDimensions
-import com.example.adminmovile.presentation.theme.AppTheme
-import com.example.adminmovile.presentation.theme.LocalAppColors
 import com.example.adminmovile.presentation.theme.LocalAppDimens
-import com.example.adminmovile.presentation.theme.ThemeViewModel
-import org.koin.compose.koinInject
 
 @Composable
 fun BaseExternalLayout(
@@ -46,42 +43,45 @@ fun BaseExternalLayout(
     onStartClick: () -> Unit,
     isDarkMode: Boolean,
     onToggleTheme: () -> Unit,
-    currentSection: LangPageViewModel.Sections,
-    onSectionSelected: (LangPageViewModel.Sections) -> Unit,
-    navController: NavController,
+    navController: NavHostController,
     notificationState: MutableState<NotificationState>,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable (PaddingValues) -> Unit
 ) {
-        Scaffold(
-            modifier = modifier.fillMaxSize(),
-            topBar = {
-                MainTopAppBar(
-                    title = title,
-                    isSearchVisible = isSearchVisible,
-                    searchQuery = searchQuery,
-                    onQueryChange = onQueryChange,
-                    onSearch = onSearch,
-                    onToggleSearch = onToggleSearch,
-                    onCloseSearch = onCloseSearch,
-                    onClickExplorer = onClickExplorer,
-                    onStartClick = onStartClick,
-                    isDarkMode = isDarkMode,
-                    onToggleTheme = onToggleTheme
-                )
-            },
-            bottomBar = {
-                BottomNavigationBar(
-                    currentSection = currentSection,
-                    onSectionSelected = onSectionSelected,
-                    navController = navController
-                )
-            }
-        ) { innerPadding ->
+    // Scaffold estático, no se destruye en cambios de screen
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
+        topBar = {
+            MainTopAppBar(
+                title = title,
+                isSearchVisible = isSearchVisible,
+                searchQuery = searchQuery,
+                onQueryChange = onQueryChange,
+                onSearch = onSearch,
+                onToggleSearch = onToggleSearch,
+                onCloseSearch = onCloseSearch,
+                onClickExplorer = onClickExplorer,
+                onStartClick = onStartClick,
+                isDarkMode = isDarkMode,
+                onToggleTheme = onToggleTheme
+            )
+        },
+        bottomBar = {
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentRoute = navBackStackEntry?.destination?.route
 
-            // 🔹 Notification + PullToRefresh englobando el contenido
+            // Mostrar solo en screens públicas
+            if (currentRoute !in listOf(Routes.LOGIN, Routes.REGISTER, Routes.SPLASH)) {
+                BottomNavigationBar(navController = navController)
+            }
+        }
+    ) { innerPadding ->
+
+        // 🔹 Solo el contenido es recomposable
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Notifications y PullToRefresh internos
             NotificationHost(state = notificationState) {
                 PullToRefreshComponent(
                     isRefreshing = isRefreshing,
@@ -95,34 +95,33 @@ fun BaseExternalLayout(
             }
         }
     }
+}
 
 
 
 val MaterialTheme.dimens: AppDimensions
     @Composable get() = LocalAppDimens.current
 
-val MaterialTheme.extraColors: AppColors
-    @Composable get() = LocalAppColors.current
-
 @Composable
 fun BaseScreenLayout(
     isLoading: Boolean = false,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(MaterialTheme.dimens.screenPadding.dp), // 👈 ahora usa AppDimensions
+    contentPadding: PaddingValues = PaddingValues(MaterialTheme.dimens.screenPadding.dp),
     content: @Composable () -> Unit
 ) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .padding(contentPadding) // 👈 ya respeta el diseño global
+            .padding(contentPadding)
     ) {
         content()
 
+        // Loading overlay animado solo cuando isLoading = true
         if (isLoading) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.6f)), // 👈 usa colorScheme
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.6f)),
                 contentAlignment = Alignment.Center
             ) {
                 LoadingScreen("Cargando datos, por favor espere...")
@@ -130,5 +129,6 @@ fun BaseScreenLayout(
         }
     }
 }
+
 
 

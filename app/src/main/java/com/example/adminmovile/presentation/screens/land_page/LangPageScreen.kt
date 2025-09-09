@@ -89,6 +89,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontStyle
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.adminmovile.presentation.components.BottomNavigationBar
 import com.example.adminmovile.presentation.components.MainTopAppBar
@@ -109,10 +110,11 @@ fun WelcomeScreen(
     onStartClick: () -> Unit,
     onClickExplorer: () -> Unit,
     viewModel: LangPageViewModel,
-    themeViewModel: ThemeViewModel = koinInject(),
-    navController: NavController
+    navController: NavHostController
 ) {
     // Estados para el LazyColumn y scroll
+    val  themeViewModel: ThemeViewModel = koinInject()
+
     val lazyListState = rememberLazyListState()
     var isBottomNavVisible by remember { mutableStateOf(true) }
 
@@ -151,7 +153,6 @@ fun WelcomeScreen(
         initialValue = false,
         lifecycle = androidx.lifecycle.compose.LocalLifecycleOwner.current.lifecycle
     )
-    val currentSection by viewModel.currentSection
     val coroutineScope = rememberCoroutineScope()
     val state by viewModel.stateService.collectAsStateWithLifecycle()
     var isRefreshing by remember { mutableStateOf(false) }
@@ -196,7 +197,7 @@ fun WelcomeScreen(
             Scaffold(
                 topBar = {
                     MainTopAppBar(
-                        title = state.items.firstOrNull()?.code ?: "Municipalidad",
+                        title = state.items.firstOrNull()?.code ?: "EP Administracion",
                         isSearchVisible = isSearchVisible,
                         searchQuery = searchQuery,
                         onQueryChange = { searchQuery = it },
@@ -207,26 +208,11 @@ fun WelcomeScreen(
                         onStartClick = onStartClick,
                         isDarkMode = isDarkMode,
                         onToggleTheme = { themeViewModel.toggleTheme() },
-                        searchPlaceholder = "Busca datos de Municipalidad"
+                        searchPlaceholder = "Busca datos de Administracion"
                     )
                 },
                 bottomBar = {
                     BottomNavigationBar(
-                        currentSection = currentSection,
-                        onSectionSelected = { section ->
-                            viewModel.onSectionSelected(section)
-                            if (section != LangPageViewModel.Sections.PRODUCTS) {
-                                coroutineScope.launch {
-                                    when (section) {
-                                        LangPageViewModel.Sections.SERVICES -> lazyListState.animateScrollToItem(2)
-                                        LangPageViewModel.Sections.PLACES -> lazyListState.animateScrollToItem(3)
-                                        LangPageViewModel.Sections.EVENTS -> lazyListState.animateScrollToItem(4)
-                                        LangPageViewModel.Sections.RECOMMENDATIONS -> lazyListState.animateScrollToItem(5)
-                                        else -> Unit
-                                    }
-                                }
-                            }
-                        },
                         navController = navController,
                         isVisible = isBottomNavVisible // Controlando la visibilidad con el estado
                     )

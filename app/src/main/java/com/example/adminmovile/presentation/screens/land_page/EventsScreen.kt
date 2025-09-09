@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.adminmovile.presentation.components.rememberNotificationState
 import com.example.adminmovile.presentation.theme.AppTheme
 import com.example.adminmovile.presentation.theme.ThemeViewModel
@@ -42,10 +43,10 @@ import com.example.adminmovile.presentation.components.showNotification
 fun EventsScreen(
     onStartClick: () -> Unit,
     onClickExplorer: () -> Unit,
-    navController: NavController,
+    navController: NavHostController,
     viewModel: LangPageViewModel,
-    themeViewModel: ThemeViewModel = koinInject()
 ) {
+    val  themeViewModel: ThemeViewModel = koinInject()
     // Estados para el LazyColumn y scroll
     val lazyListState = rememberLazyListState()
     var isBottomNavVisible by remember { mutableStateOf(true) }
@@ -82,17 +83,10 @@ fun EventsScreen(
     val stateEmprendedor by viewModel.stateService.collectAsState()
     val notificationState = rememberNotificationState()
     val isDarkMode by themeViewModel.isDarkMode.collectAsStateWithLifecycle(false)
-    val currentSection by viewModel.currentSection
     var searchQuery by remember { mutableStateOf("") }
     var isSearchVisible by remember { mutableStateOf(false) }
     val visible = remember { mutableStateOf(false) }
     var isRefreshing by remember { mutableStateOf(false) }
-
-    // Efectos
-    LaunchedEffect(Unit) {
-        viewModel.onSectionSelected(LangPageViewModel.Sections.EVENTS)
-        visible.value = true
-    }
 
     // Eventos de Capachica (Puedes agregar más actividades o cambiar las imágenes según sea necesario)
     val capachicaEvents = listOf(
@@ -165,10 +159,6 @@ fun EventsScreen(
                 },
                 bottomBar = {
                     BottomNavigationBar(
-                        currentSection = currentSection,
-                        onSectionSelected = { section ->
-                            viewModel.onSectionSelected(section)
-                        },
                         navController = navController,
                         isVisible = isBottomNavVisible // Controlando la visibilidad con el estado
                     )

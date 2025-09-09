@@ -55,10 +55,10 @@ import androidx.navigation.NavHostController
 import com.example.adminmovile.R
 import com.example.adminmovile.data.local.SessionManager
 import com.example.adminmovile.domain.model.User
+import com.example.adminmovile.presentation.components.AdminSchoolBackground
 import com.example.adminmovile.presentation.components.AppButton
 import com.example.adminmovile.presentation.components.AppCard
 import com.example.adminmovile.presentation.components.AppTextFieldWithKeyboard
-import com.example.adminmovile.presentation.components.FloatingBubblesBackground
 import com.example.adminmovile.presentation.components.ShowLoadingDialog
 import com.example.adminmovile.presentation.theme.AppColors
 import com.example.adminmovile.presentation.theme.AppTheme
@@ -150,12 +150,12 @@ fun LoginScreen(
         {
             // Fondo animado adaptativo
             if (!isLargeScreen) {
-                FloatingBubblesBackground(
+                AdminSchoolBackground(
                     modifier = Modifier.fillMaxSize()
                 )
             } else {
                 // Fondo animado con elementos de turismo
-                FloatingBubblesBackground(
+                AdminSchoolBackground(
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -192,8 +192,8 @@ fun LoginScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Image(
-                                painter = painterResource(id = R.drawable.maker_blue),
-                                contentDescription = "Turismo Capachica",
+                                painter = painterResource(id = R.drawable.fce),
+                                contentDescription = "EP Administracion",
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .fillMaxHeight(0.8f)
@@ -323,7 +323,7 @@ private fun LoginFormContent(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Image(
-                        painter = painterResource(id = R.drawable.marker_red),
+                        painter = painterResource(id = R.drawable.fce),
                         contentDescription = "Logo",
                         modifier = Modifier
                             .size(120.dp)
@@ -332,7 +332,7 @@ private fun LoginFormContent(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "Turismo Capachica",
+                        text = "EP Administracion",
                         style = MaterialTheme.typography.headlineLarge.copy(
                             fontWeight = FontWeight.ExtraBold,
                             fontSize = 26.sp,

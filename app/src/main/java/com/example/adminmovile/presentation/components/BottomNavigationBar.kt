@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.DriveFileMove
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material.ripple.rememberRipple
@@ -25,68 +26,49 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.example.adminmovile.presentation.screens.land_page.LangPageViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.adminmovile.presentation.navigation.Routes
 
 @Composable
 fun BottomNavigationBar(
-    currentSection: LangPageViewModel.Sections,
-    onSectionSelected: (LangPageViewModel.Sections) -> Unit,
-    navController: NavController,
+    navController: NavHostController,
     modifier: Modifier = Modifier,
-    isVisible: Boolean = true // Nuevo parámetro para controlar visibilidad
+    isVisible: Boolean = true
 ) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     val navItems = listOf(
         BottomNavItem(
             icon = Icons.Outlined.Home,
             selectedIcon = Icons.Filled.SpaceDashboard,
             label = "Inicio",
-            section = LangPageViewModel.Sections.HOME,
             route = Routes.LAND_PAGE
         ),
         BottomNavItem(
-            icon = Icons.Outlined.MiscellaneousServices,
-            selectedIcon = Icons.Filled.MiscellaneousServices,
-            label = "Servicios",
-            section = LangPageViewModel.Sections.SERVICES,
-            route = Routes.SERVICES
+            icon = Icons.Outlined.GraphicEq,
+            selectedIcon = Icons.Filled.AutoGraph,
+            label = "Graficos",
+            route = Routes.PROGRESS
         ),
         BottomNavItem(
-            icon = Icons.Outlined.LocationOff,
-            selectedIcon = Icons.Filled.LocationOn,
-            label = "Lugares",
-            section = LangPageViewModel.Sections.PLACES,
-            route = Routes.PLACES
-        ),
-        BottomNavItem(
-            icon = Icons.Outlined.Event,
-            selectedIcon = Icons.Filled.EventAvailable,
-            label = "Eventos",
-            section = LangPageViewModel.Sections.EVENTS,
-            route = Routes.EVENTS
+            icon = Icons.Outlined.DriveFileMoveRtl,
+            selectedIcon = Icons.AutoMirrored.Filled.DriveFileMove,
+            label = "Practicas",
+            route = Routes.PRACTICE
         ),
         BottomNavItem(
             icon = Icons.Outlined.FavoriteBorder,
             selectedIcon = Icons.Filled.Favorite,
             label = "Favoritos",
-            section = LangPageViewModel.Sections.RECOMMENDATIONS,
             route = Routes.RECOMMENDATIONS
         ),
-        BottomNavItem(
-            icon = Icons.Outlined.ShoppingCart,
-            selectedIcon = Icons.Filled.ShoppingBag,
-            label = "Productos",
-            section = LangPageViewModel.Sections.PRODUCTS,
-            route = Routes.PRODUCTS
-        )
     )
 
-    // Colores más elegantes
     val surfaceColor = MaterialTheme.colorScheme.surface
     val borderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.12f)
 
-    // Animación de entrada suave
     val animatedElevation by animateFloatAsState(
         targetValue = if (isVisible) 12f else 0f,
         animationSpec = spring(
@@ -96,7 +78,6 @@ fun BottomNavigationBar(
         label = "elevation"
     )
 
-    // Contenedor con AnimatedVisibility para mostrar/ocultar
     AnimatedVisibility(
         visible = isVisible,
         enter = slideInVertically(
@@ -148,7 +129,6 @@ fun BottomNavigationBar(
                         )
                     )
             ) {
-                // Indicador superior más elegante
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -172,7 +152,6 @@ fun BottomNavigationBar(
                     )
                 }
 
-                // Items de navegación con espaciado mejorado
                 LazyRow(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -181,12 +160,17 @@ fun BottomNavigationBar(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     items(navItems) { item ->
+                        val isSelected = currentRoute == item.route
                         BottomNavItemComponent(
                             item = item,
-                            isSelected = currentSection == item.section,
+                            isSelected = isSelected,
                             onClick = {
-                                onSectionSelected(item.section)
-                                safeNavigate(navController, item.route)
+                                // Navegación segura entre tabs
+                                navController.navigate(item.route) {
+                                    launchSingleTop = true
+                                    restoreState = true
+                                    popUpTo(Routes.LAND_PAGE) { saveState = true }
+                                }
                             }
                         )
                     }
@@ -202,34 +186,20 @@ private fun BottomNavItemComponent(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    // Animaciones sutiles y elegantes como WhatsApp
     val iconColor by animateColorAsState(
-        targetValue = if (isSelected) {
-            MaterialTheme.colorScheme.primary
-        } else {
-            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-        },
-        animationSpec = tween(
-            durationMillis = 300,
-            easing = FastOutSlowInEasing
-        ),
+        targetValue = if (isSelected) MaterialTheme.colorScheme.primary
+        else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+        animationSpec = tween(300, easing = FastOutSlowInEasing),
         label = "iconColor"
     )
 
     val textColor by animateColorAsState(
-        targetValue = if (isSelected) {
-            MaterialTheme.colorScheme.primary
-        } else {
-            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
-        },
-        animationSpec = tween(
-            durationMillis = 300,
-            easing = FastOutSlowInEasing
-        ),
+        targetValue = if (isSelected) MaterialTheme.colorScheme.primary
+        else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+        animationSpec = tween(300, easing = FastOutSlowInEasing),
         label = "textColor"
     )
 
-    // Animación de escala sutil
     val scale by animateFloatAsState(
         targetValue = if (isSelected) 1.05f else 1f,
         animationSpec = spring(
@@ -239,17 +209,12 @@ private fun BottomNavItemComponent(
         label = "scale"
     )
 
-    // Animación del fondo
     val backgroundAlpha by animateFloatAsState(
         targetValue = if (isSelected) 0.12f else 0f,
-        animationSpec = tween(
-            durationMillis = 400,
-            easing = FastOutSlowInEasing
-        ),
+        animationSpec = tween(400, easing = FastOutSlowInEasing),
         label = "backgroundAlpha"
     )
 
-    // Animación del indicador circular (como WhatsApp)
     val indicatorScale by animateFloatAsState(
         targetValue = if (isSelected) 1f else 0f,
         animationSpec = spring(
@@ -263,7 +228,7 @@ private fun BottomNavItemComponent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .width(65.dp) // Más ancho para acomodar texto
+            .width(65.dp)
             .clip(RoundedCornerShape(18.dp))
             .background(
                 color = MaterialTheme.colorScheme.primary.copy(alpha = backgroundAlpha),
@@ -277,18 +242,10 @@ private fun BottomNavItemComponent(
                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
                 )
             ) { onClick() }
-            .padding(vertical = 10.dp, horizontal = 6.dp) // Más padding horizontal
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-            }
+            .padding(vertical = 10.dp, horizontal = 6.dp)
+            .graphicsLayer { scaleX = scale; scaleY = scale }
     ) {
-        // Container del icono con indicador
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.size(28.dp)
-        ) {
-            // Indicador circular de fondo (estilo WhatsApp)
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.size(28.dp)) {
             if (isSelected) {
                 Box(
                     modifier = Modifier
@@ -308,7 +265,6 @@ private fun BottomNavItemComponent(
                 )
             }
 
-            // Icono con transición suave
             Icon(
                 imageVector = if (isSelected) item.selectedIcon else item.icon,
                 contentDescription = item.label,
@@ -319,22 +275,15 @@ private fun BottomNavItemComponent(
 
         Spacer(modifier = Modifier.height(6.dp))
 
-        // Texto con animaciones sutiles
         AnimatedContent(
             targetState = isSelected,
-            transitionSpec = {
-                fadeIn(
-                    animationSpec = tween(200, easing = LinearEasing)
-                ) togetherWith fadeOut(
-                    animationSpec = tween(200, easing = LinearEasing)
-                )
-            },
+            transitionSpec = { fadeIn(animationSpec = tween(200)) togetherWith fadeOut(animationSpec = tween(200)) },
             label = "textAnimation"
         ) { selected ->
             Text(
                 text = item.label,
                 color = textColor,
-                fontSize = if (selected) 12.sp else 11.sp, // Texto más grande
+                fontSize = if (selected) 12.sp else 11.sp,
                 fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
                 style = MaterialTheme.typography.labelSmall.copy(
                     letterSpacing = if (selected) 0.3.sp else 0.2.sp
@@ -346,25 +295,16 @@ private fun BottomNavItemComponent(
             )
         }
 
-        // Pequeño indicador de punto (como WhatsApp)
         AnimatedVisibility(
             visible = isSelected,
-            enter = scaleIn(
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessHigh
-                )
-            ) + fadeIn(),
+            enter = scaleIn(spring(dampingRatio = Spring.DampingRatioMediumBouncy)) + fadeIn(),
             exit = scaleOut() + fadeOut()
         ) {
             Box(
                 modifier = Modifier
                     .padding(top = 2.dp)
                     .size(4.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.primary,
-                        shape = CircleShape
-                    )
+                    .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape)
             )
         }
     }
@@ -374,24 +314,5 @@ data class BottomNavItem(
     val icon: ImageVector,
     val selectedIcon: ImageVector,
     val label: String,
-    val section: LangPageViewModel.Sections,
     val route: String
 )
-
-private fun safeNavigate(navController: NavController, route: String) {
-    try {
-        val currentRoute = navController.currentBackStackEntry?.destination?.route
-        if (currentRoute != route) {
-            navController.navigate(route) {
-                launchSingleTop = true
-                restoreState = true
-                popUpTo(navController.graph.startDestinationId) {
-                    saveState = true
-                }
-            }
-        }
-    } catch (e: Exception) {
-        // Manejo seguro de errores de navegación
-        e.printStackTrace()
-    }
-}

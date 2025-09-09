@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.ui.Alignment
 import com.example.adminmovile.presentation.components.AppDrawer
 import com.example.adminmovile.presentation.navigation.Routes
-import com.example.adminmovile.presentation.theme.AppTheme
 import com.example.adminmovile.presentation.theme.ThemeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,7 +52,6 @@ fun BaseScreenLayout(
         }
     }
 
-    AppTheme(darkTheme = isDarkMode) {
         ModalNavigationDrawer(
             drawerState = drawerState,
             drawerContent = {
@@ -177,7 +175,7 @@ fun BaseScreenLayout(
                 }
             }
         }
-    }
+
 
     LaunchedEffect(drawerState.currentValue) {
         viewModel.setDrawerOpen(drawerState.currentValue == DrawerValue.Open)

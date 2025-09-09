@@ -16,9 +16,10 @@ import org.koin.compose.koinInject
 @Composable
 fun ExplorerScreen(
     viewModel: LangPageViewModel = koinInject(),
-    themeViewModel: ThemeViewModel = koinInject()
 ) {
     // Estados para el LazyColumn y scroll
+    val  themeViewModel: ThemeViewModel = koinInject()
+
     val lazyListState = rememberLazyListState()
     var isBottomNavVisible by remember { mutableStateOf(true) }
 
