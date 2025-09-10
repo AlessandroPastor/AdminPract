@@ -625,48 +625,23 @@ private fun MenuItemComponent(
 // 🎨 FUNCIÓN PARA OBTENER ICONOS (Mantenida igual)
 private fun getIconForTitle(title: String): ImageVector {
     return when (title.lowercase()) {
-        // Secciones principales
+        // Secciones principales MODULOS PADRES
         "configuración" -> Icons.Default.Settings
-        "catálogo" -> Icons.AutoMirrored.Filled.ViewList
-        "contabilidad" -> Icons.Default.Calculate
-        "clientes" -> Icons.Default.People
-        "compras" -> Icons.Default.ShoppingCart
-        "ventas" -> Icons.Default.ShoppingBag
-        "movimiento de almacén" -> Icons.Default.Warehouse
-        "pagos" -> Icons.Default.CreditCard
-        "reportes" -> Icons.Default.BarChart
-        "tipo de servicios"-> Icons.Default.MiscellaneousServices
-        // Configuración
-        "usuarios" -> Icons.Default.Person
-        "usuario empresa" -> Icons.Default.Business
-        "modulos padres" -> Icons.Default.Dashboard
-        "modulos" -> Icons.Default.Extension
-        "roles" -> Icons.Default.AdminPanelSettings
-        "municipalidad" -> Icons.Default.Domain
-        "asociaciones" -> Icons.Default.Business
-        "configuración página"-> Icons.Default.Pages
-        "reservas"-> Icons.Default.Receipt
-        "productos ofrecidos"-> Icons.Default.ProductionQuantityLimits
-        // Catálogo
-        "unidad medida" -> Icons.Default.Straighten
-        "categoría" -> Icons.Default.Category
-        "productos" -> Icons.Default.Inventory
-        "distibucion de productos" -> Icons.Default.LocalShipping
+        "seguimiento y evaluación" -> Icons.Default.Assessment   // 📊 mejor que TrackChanges
+        "documentos y tramite" -> Icons.Default.Description      // 📄 documento
 
-        // Contabilidad
-        "tipo de documento" -> Icons.Default.Description
-        "tipo de afectacion" -> Icons.AutoMirrored.Filled.Assignment
-        "clase cuenta contable" -> Icons.Default.AccountBalance
-        "areas" -> Icons.Default.Apartment
-        "plan de contable" -> Icons.Default.RequestQuote
-        "almacén" -> Icons.Default.Store
-        "dinámica contable" -> Icons.Default.Sync
 
-        // Clientes
-        "clientes y proveedores" -> Icons.Default.Groups
-        "tipo de entidad" -> Icons.Default.CorporateFare
-        "servicios" -> Icons.Default.RoomService
-        "entidades" -> Icons.Default.BusinessCenter
+
+        // Secciones secundarias MODULOS HIJOS
+        "roles" -> Icons.Default.AdminPanelSettings        // 👤⚙️ configuración de usuarios
+        "usuarios" -> Icons.Default.Group                  // 👥 en lugar de Person (más representativo)
+        "modulos" -> Icons.Default.Apps                    // 🟦 mosaico de apps/módulos
+        "modulos padres" -> Icons.Default.Dashboard        // 📊 tablero
+        "configuración general" -> Icons.Default.Tune      // 🎛 controles
+        "evaluaciones" -> Icons.Default.Quiz               // 📝 examen / prueba
+        "indicadores" -> Icons.Default.Insights            // 📈 métricas
+        "trámites en línea" -> Icons.Default.FolderSpecial // 📂 trámite destacado
+        "bandeja de documentos" -> Icons.Default.Mail      // 📬 bandeja
 
 
         else -> Icons.Default.Circle

@@ -25,7 +25,7 @@ class ParentModuleViewModel(
     fun loadParentModules(page: Int = 0, searchQuery: String? = null) {
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
-            repository.getParentModules(page = page, size = 1, name = searchQuery) // ← Aquí establecemos el límite
+            repository.getParentModules(page = page, size = 20, name = searchQuery) // ← Aquí establecemos el límite
                 .onSuccess { response ->
                     _state.value = _state.value.copy(
                         items = response.content,
@@ -108,7 +108,7 @@ class ParentModuleViewModel(
         }
     }
 
-    fun deleteParentModule(id: String) {
+    fun deleteParentModule(id: Int) {
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
             repository.deleteParentModule(id)

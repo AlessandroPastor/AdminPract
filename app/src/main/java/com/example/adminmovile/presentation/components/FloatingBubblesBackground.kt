@@ -23,50 +23,6 @@ fun AdminSchoolBackground(
     modifier: Modifier = Modifier,
 ) {
     val colorScheme = MaterialTheme.colorScheme
-
-    // Animaciones para elementos dinámicos
-    val infiniteTransition = rememberInfiniteTransition()
-
-    // Animación de partículas flotantes
-    val particleAnimation by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(12000, easing = LinearEasing)
-        ), label = ""
-    )
-
-    // Animación de ondas de datos
-    val dataWaveOffset by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 100f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(4000, easing = LinearEasing)
-        ), label = ""
-    )
-
-    // Animación de pulso de edificios
-    val buildingPulse by infiniteTransition.animateFloat(
-        initialValue = 0.95f,
-        targetValue = 1.05f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(6000, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ), label = ""
-    )
-
-    // Animación de gráficos
-    val chartAnimation by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(5000, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ), label = ""
-    )
-
-    val floatingElements = remember { generateFloatingElements(25) }
-
     Canvas(modifier = modifier.fillMaxSize()) {
         // Fondo degradado profesional usando AppTheme
         drawRect(
@@ -80,25 +36,6 @@ fun AdminSchoolBackground(
                 startY = 0f,
                 endY = size.height
             )
-        )
-
-        // 🏢 Campus universitario con edificios modernos
-        drawModernCampus(
-            colorScheme = colorScheme,
-            pulse = buildingPulse,
-            canvasSize = size
-        )
-        // 📊 Gráficos flotantes animados
-        drawFloatingCharts(
-            colorScheme = colorScheme,
-            animation = chartAnimation,
-            canvasSize = size
-        )
-        // 📈 Ondas de datos dinámicas
-        drawDataWaves(
-            colorScheme = colorScheme,
-            offset = dataWaveOffset,
-            canvasSize = size
         )
     }
 }

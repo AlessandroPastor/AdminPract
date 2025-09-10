@@ -44,6 +44,7 @@ class RoleViewModel(
                         response.content.forEach { role ->
                             println("     ➡️ ID: ${role.id}, Nombre: ${role.name}")
                         }
+
                         _state.value = _state.value.copy(
                             items = response.content,
                             currentPage = response.currentPage,
@@ -52,6 +53,9 @@ class RoleViewModel(
                             isLoading = false,
                             error = null
                         )
+
+                        // 🖨 Print del estado completo para depuración
+                        println("📄 Estado actualizado: ${_state.value}")
                     }
                     .onFailure { error ->
                         _state.value = _state.value.copy(
@@ -63,6 +67,7 @@ class RoleViewModel(
                                 isVisible = true
                             )
                         )
+                        println("⚠️ Error al cargar roles: ${error.message}")
                     }
             } catch (e: Exception) {
                 _state.value = _state.value.copy(
@@ -74,9 +79,11 @@ class RoleViewModel(
                         isVisible = true
                     )
                 )
+                println("❌ Excepción inesperada: ${e.message}")
             }
         }
     }
+
 
 
 
@@ -98,7 +105,7 @@ class RoleViewModel(
         }
     }
 
-    fun loadModulesSelected(roleId: String, parentModuleId: String) {
+    fun loadModulesSelected(roleId: Int, parentModuleId: Int) {
         viewModelScope.launch {
             _selectedModules.value = emptyList() // 🔹 Limpia la lista para evitar el retraso en la UI
             moduleRepository.getModulesSelected(roleId, parentModuleId)
@@ -125,7 +132,7 @@ class RoleViewModel(
 
 
 
-    fun updateModuleSelection(roleId: String, parentModuleId: String, updatedModules: List<ModuleSelectedDTO>) {
+    /*fun updateModuleSelection(roleId: String, parentModuleId: String, updatedModules: List<ModuleSelectedDTO>) {
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
 
@@ -175,7 +182,7 @@ class RoleViewModel(
                 _state.value = _state.value.copy(isLoading = false)
             }
         }
-    }
+    }*/
 
 
 

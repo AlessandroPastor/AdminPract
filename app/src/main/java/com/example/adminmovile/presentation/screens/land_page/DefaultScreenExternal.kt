@@ -1,19 +1,19 @@
 package com.example.adminmovile.presentation.screens.land_page
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,22 +22,25 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.example.adminmovile.presentation.components.WhatsAppFloatingButton
 import com.example.adminmovile.presentation.components.rememberNotificationState
 import com.example.adminmovile.presentation.navigation.Routes
 import com.example.adminmovile.presentation.theme.ThemeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
+import com.example.adminmovile.R
 
 @Composable
 fun DefaultScreenExternal(
     title: String,
     navController: NavHostController,
     viewModel: LangPageViewModel? = null,
+    onStartClick: () -> Unit,
 ) {
     val themeViewModel: ThemeViewModel = koinInject()
     val notificationState = rememberNotificationState()
@@ -90,11 +93,11 @@ fun DefaultScreenExternal(
         isSearchVisible = isSearchVisible,
         searchQuery = searchQuery,
         onQueryChange = { searchQuery = it },
-        onSearch = { /* placeholder */ },
+        onSearch = { },
         onToggleSearch = { isSearchVisible = true },
         onCloseSearch = { isSearchVisible = false },
         onClickExplorer = { navController.navigate(Routes.EXPLORATE) },
-        onStartClick = { /* placeholder */ },
+        onStartClick = onStartClick,
         isDarkMode = isDarkMode,
         onToggleTheme = { themeViewModel.toggleTheme() },
         navController = navController,
@@ -107,47 +110,48 @@ fun DefaultScreenExternal(
                 isRefreshing = false
             }
         }
-    ) { padding ->
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)
-        ) {
-            // Contenido principal
-            LazyColumn(
-                state = lazyListState,
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(bottom = 120.dp)
-            ) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        if (visible) {
-                            Text(
-                                text = "Pantalla en desarrollo",
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        }
-                    }
-                }
-            }
+    ) { innerPadding ->
 
-            // Botones flotantes
-            if (showWhatsAppButton.value) {
-                WhatsAppFloatingButton(
-                    phoneNumber = "+51963378995",
-                    message = "Hola, quiero saber man",
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(end = 16.dp, bottom = 32.dp)
-                        .size(56.dp)
-                )
+        // 👇 ESTE BOX YA OCUPA TODO EL ESPACIO DISPONIBLE DEL SCAFFOLD
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            contentAlignment = Alignment.Center
+        ) {
+            if (visible) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.cono),
+                        contentDescription = "En construcción",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(96.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = "Pantalla en desarrollo",
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "Estamos trabajando para traerte algo increíble",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
+                        ),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
     }
 }
-
-

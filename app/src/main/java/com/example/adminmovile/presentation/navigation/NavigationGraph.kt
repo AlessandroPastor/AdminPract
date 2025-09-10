@@ -42,21 +42,6 @@ fun NavigationGraph(
     val scope = rememberCoroutineScope()
     var pendingNavigation by remember { mutableStateOf<String?>(null) }
 
-    val publicRoutes = setOf(
-        Routes.SPLASH,
-        Routes.ONBOARDING,
-        Routes.LAND_PAGE,
-        Routes.LOGIN,
-        Routes.EXPLORATE,
-        Routes.REGISTER,
-        Routes.SERVICES,
-        Routes.PLACES,
-        Routes.EVENTS,
-        Routes.RECOMMENDATIONS,
-        Routes.PROGRESS,
-        Routes.PRACTICE
-    )
-
     LaunchedEffect(sessionManager) {
         // Solo navega cuando pendingNavigation cambia
         snapshotFlow { pendingNavigation }.collect { route ->
@@ -71,60 +56,24 @@ fun NavigationGraph(
             }
         }
     }
-    LaunchedEffect(navController) {
-        navController.currentBackStackEntryFlow.collectLatest { backStackEntry ->
-            scope.launch {
-                val route = backStackEntry.destination.route
-                val tokenValid = sessionManager.isTokenValid()
-                if (tokenValid && (route == Routes.LOGIN || route == Routes.REGISTER)) {
-                    navController.navigate(Routes.LAND_PAGE) {
-                        popUpTo(Routes.LOGIN) { inclusive = true }
-                    }
-                }
-                if (!tokenValid && route !in publicRoutes) {
-                    if (route != null) {
-                        sessionManager.setPendingRoute(route)
-                    }
-                    onLogout()
-                    navController.navigate(Routes.LOGIN) {
-                        popUpTo(Routes.LAND_PAGE) { inclusive = false }
-                    }
-                }
-            }
-        }
-    }
-
-
 
     NavHost(
         navController = navController,
         startDestination = Routes.SPLASH
     ) {
 
-        // En tu NavGraph o donde tengas la navegación
+        // Después
         composable(Routes.SPLASH) {
             SplashScreen(
                 onSplashFinished = {
-                    scope.launch {
-                        val tokenValid = sessionManager.isTokenValid()
-                        val isFirstTime = !sessionManager.isOnboardingCompleted()
-                        if (tokenValid) {
-                            navController.navigate(Routes.LAND_PAGE) {
-                                popUpTo(Routes.SPLASH) { inclusive = true }
-                            }
-                        } else if (isFirstTime) {
-                            navController.navigate(Routes.ONBOARDING) {
-                                popUpTo(Routes.SPLASH) { inclusive = true }
-                            }
-                        } else {
-                            navController.navigate(Routes.LAND_PAGE) {
-                                popUpTo(Routes.SPLASH) { inclusive = true }
-                            }
-                        }
+                    navController.navigate(Routes.LAND_PAGE) {
+                        popUpTo(Routes.SPLASH) { inclusive = true }
                     }
                 }
             )
         }
+
+
         // Onboarding Screen
         composable(Routes.ONBOARDING) {
             OnboardingScreen(
@@ -224,37 +173,46 @@ fun NavigationGraph(
 
         // Welcome / Land Page
         composable(Routes.LAND_PAGE) {
-            WelcomeScreen(
+            DefaultScreenExternal(
+                title = "Home",
                 navController = navController,
-                viewModel = viewModelLangPage,
+                viewModelLangPage,
                 onStartClick = {
-                    scope.launch {
-                        val tokenValid = sessionManager.isTokenValid()
-                        if (tokenValid) {
-                            navController.navigate(Routes.HOME)
-                        } else {
-                            navController.navigate(Routes.LOGIN)
-                        }
-                    }
-                },
-                onClickExplorer = { navController.navigate(Routes.EXPLORATE) }
+                    navController.navigate(Routes.LOGIN)
+                }
             )
         }
 
         // Graficos Estadisticos
         composable(Routes.PROGRESS) {
-            DefaultScreenExternal("Gráficos Estadísticos", navController, viewModelLangPage,)
+            DefaultScreenExternal(
+                title = "Gráficos Estadísticos",
+                navController = navController,
+                 viewModelLangPage,
+                onStartClick = {
+                    navController.navigate(Routes.LOGIN)
+                }
+            )
         }
+
 
         // Practicas
         composable(Routes.PRACTICE) {
-            DefaultScreenExternal("Prácticas", navController, viewModelLangPage)
+            DefaultScreenExternal("Prácticas", navController, viewModelLangPage,
+                onStartClick = {
+                    navController.navigate(Routes.LOGIN)
+                }
+            )
         }
 
 
         // Recomendaciones
         composable(Routes.RECOMMENDATIONS) {
-            DefaultScreenExternal("Recomendaciones", navController, viewModelLangPage)
+            DefaultScreenExternal("Recomendaciones", navController, viewModelLangPage,
+                onStartClick = {
+                    navController.navigate(Routes.LOGIN)
+                }
+            )
         }
 
 
@@ -284,11 +242,13 @@ private suspend fun navigateAfterAuth(
             popUpTo(popUpRoute) { inclusive = true }
         }
     } else {
-        navController.navigate(Routes.LAND_PAGE) {
+        navController.navigate(Routes.HOME) {
             popUpTo(popUpRoute) { inclusive = true }
         }
     }
 }
+
+
 
 private fun setupMenuRoutes(
     navGraphBuilder: NavGraphBuilder,

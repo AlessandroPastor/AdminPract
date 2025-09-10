@@ -5,13 +5,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ParentModule(
-    val id: String,
+    val id: Int,
     val title: String = "",
     val code: String = "",
     val subtitle: String = "",
     val type: String = "",
     val icon: String = "",
-    val status: Boolean = true,
+    val status: Int? = null ,
     val moduleOrder: Int = 0,
     val link: String = "",
     val createdAt: String? = null,
@@ -29,12 +29,12 @@ data class ParentModuleListResponse(
 
 @Serializable
 data class ParentModuleDetail(
-    val id: String,
+    val id: Int,
     val title: String,
     val subtitle: String,
     val type: String,
     val icon: String,
-    val status: Boolean,
+    val status: Int? = null ,
     val moduleOrder: Int,
     val link: String,
     val createdAt: String,

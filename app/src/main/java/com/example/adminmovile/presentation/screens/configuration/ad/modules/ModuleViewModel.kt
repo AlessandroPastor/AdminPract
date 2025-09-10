@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 
 class ModuleViewModel(
     private val repository: ModuleRepository,
-    private val modulerepository : ParentModuleRepository
+    private val modulerepository: ParentModuleRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ModuleState())
@@ -32,7 +32,7 @@ class ModuleViewModel(
             println("📥 [LOAD MODULES] Página=$page | Búsqueda=${searchQuery ?: "ninguna"}")
             _state.value = _state.value.copy(isLoading = true)
             try {
-                repository.getModules(page = page, name = searchQuery)
+                repository.getModules(page = page, size = 20, name = searchQuery) // ← Aquí establecemos el límite
                     .onSuccess { response ->
                         println("✅ [LOAD MODULES] Se cargaron ${response.content.size} módulos.")
                         _state.value = _state.value.copy(
@@ -74,7 +74,7 @@ class ModuleViewModel(
         viewModelScope.launch {
             println("📥 [LOAD PARENT MODULES] Página=$page | Búsqueda=${searchQuery ?: "ninguna"}")
             _state.value = _state.value.copy(isLoading = true)
-            modulerepository.getParentModules(page = page, name = searchQuery)
+            modulerepository.getParentModules(page = page, size = 20, name = searchQuery)
                 .onSuccess { response ->
                     println("✅ [LOAD PARENT MODULES] Se cargaron ${response.content.size} parentModules.")
                     _state.value = _state.value.copy(
@@ -108,14 +108,14 @@ class ModuleViewModel(
 
             val dto = ModuleCreateDTO(
                 title = module.title,
-                subtitle = module.subtitle ?: "",
-                type = module.type ?: "",
-                icon = module.icon ?: "",
+                subtitle = module.subtitle,
+                type = module.type,
+                icon = module.icon,
                 status = module.status,
-                selected = (module as? ModuleCreateDTO)?.selected ?: true,
+                selected = true,
                 moduleOrder = module.moduleOrder,
                 link = module.link,
-                parentModuleId = module.parentModule?.id?.takeIf { it.isNotEmpty() } ?: ""
+                parentModuleId = module.parentModule?.id
             )
 
             println("📦 [CREATE MODULE] DTO enviado: $dto")
@@ -149,22 +149,23 @@ class ModuleViewModel(
     }
 
     fun updateModule(module: ModuleDTO) {
-        if (module.id.isNullOrEmpty()) return
+        if (module.id == null) return
 
         viewModelScope.launch {
             println("✏️ [UPDATE MODULE] Editando módulo con ID=${module.id}")
             _state.value = _state.value.copy(isLoading = true)
 
             val dto = ModuleCreateDTO(
+                id = module.id,
                 title = module.title,
-                subtitle = module.subtitle ?: "",
-                type = module.type ?: "",
-                icon = module.icon ?: "",
+                subtitle = module.subtitle,
+                type = module.type,
+                icon = module.icon,
                 status = module.status,
                 selected = true,
                 moduleOrder = module.moduleOrder,
                 link = module.link,
-                parentModuleId = module.parentModule?.id?.takeIf { it.isNotEmpty() } ?: ""
+                parentModuleId = module.parentModule?.id
             )
 
             println("📦 [UPDATE MODULE] DTO enviado: $dto")
@@ -197,7 +198,7 @@ class ModuleViewModel(
         }
     }
 
-    fun deleteModule(id: String) {
+    fun deleteModule(id: Int) {
         viewModelScope.launch {
             println("🗑️ [DELETE MODULE] Eliminando módulo con ID=$id")
             _state.value = _state.value.copy(isLoading = true)
@@ -229,7 +230,7 @@ class ModuleViewModel(
     }
 
     fun setSelectedModule(module: ModuleDTO?) {
-        if (module?.id.isNullOrEmpty()) {
+        if (module?.id == null) {
             println("🆕 [SET MODULE] Módulo nuevo. Mostrando diálogo vacío.")
             _state.update { it.copy(selectedItem = module, isDialogOpen = true) }
             return
@@ -241,7 +242,7 @@ class ModuleViewModel(
 
         viewModelScope.launch {
             if (module != null) {
-                repository.getModuleById(module.id!!)
+                repository.getModuleById(module.id)
                     .onSuccess { updatedModule ->
                         println("✅ [SET MODULE] Módulo cargado correctamente.")
                         _state.update {
@@ -267,7 +268,6 @@ class ModuleViewModel(
             }
         }
     }
-
 
     fun closeDialog() {
         _state.value = _state.value.copy(

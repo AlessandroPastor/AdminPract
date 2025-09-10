@@ -65,13 +65,13 @@ fun ParentModuleScreen(
                     )
                     StatisticCard(
                         title = "Activos",
-                        value = state.items.count { it.status }.toString(),
+                        value = state.items.count { it.status == 1 }.toString(),
                         icon = Icons.Default.CheckCircle,
                         modifier = Modifier.weight(1f)
                     )
                     StatisticCard(
                         title = "Inactivos",
-                        value = state.items.count { !it.status }.toString(),
+                        value = state.items.count { it.status == 1 }.toString(),
                         icon = Icons.Default.Cancel,
                         modifier = Modifier.weight(1f)
                     )
@@ -96,12 +96,30 @@ fun ParentModuleScreen(
                     )
 
                     Button(
-                        onClick = { viewModel.setSelectedParentModule(ParentModule("", "", "", "", "", "", true, 0, "", "", "", "")) },
+                        onClick = {
+                            viewModel.setSelectedParentModule(
+                                ParentModule(
+                                    id = 0, // 👈 0 = nuevo
+                                    title = "",
+                                    code = "",
+                                    subtitle = "",
+                                    type = "",
+                                    icon = "",
+                                    status = 1,
+                                    moduleOrder = 0,
+                                    link = "",
+                                    createdAt = null,
+                                    updatedAt = null,
+                                    deletedAt = null
+                                )
+                            )
+                        },
                     ) {
                         Icon(Icons.Default.Add, contentDescription = "Nuevo")
                         Spacer(Modifier.width(8.dp))
                         Text("Nuevo Módulo")
                     }
+
                 }
 
                 // Lista de módulos
@@ -146,7 +164,7 @@ fun ParentModuleScreen(
                 parentModule = state.selectedItem,
                 onDismiss = { viewModel.closeDialog() },
                 onSave = { module ->
-                    if (module.id.isEmpty()) {
+                    if (module.id == 0) {
                         viewModel.createParentModule(module)
                     } else {
                         viewModel.updateParentModule(module)
@@ -205,7 +223,7 @@ fun ParentModuleRow(
                     .padding(horizontal = 8.dp),
                 contentAlignment = Alignment.Center
             ) {
-                StatusBadge(isActive = parentModule.status)
+                parentModule.status?.let { StatusBadge(status = it) }
             }
 
             Row(
@@ -232,7 +250,8 @@ fun ParentModuleRow(
 }
 
 @Composable
-fun StatusBadge(isActive: Boolean) {
+fun StatusBadge(status: Int) {
+    val isActive = status == 1
     Surface(
         color = if (isActive) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer,
         shape = MaterialTheme.shapes.small
@@ -255,11 +274,13 @@ fun ParentModuleDialog(
     var title by remember { mutableStateOf(parentModule?.title ?: "") }
     var code by remember { mutableStateOf(parentModule?.code ?: "") }
     var subtitle by remember { mutableStateOf(parentModule?.subtitle ?: "") }
-    var status by remember { mutableStateOf(parentModule?.status ?: true) }
+    var status by remember { mutableStateOf(parentModule?.status) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (parentModule?.id?.isEmpty() == true) "Nuevo Módulo" else "Editar Módulo") },
+        title = {
+            Text(if (parentModule?.id == 0) "Nuevo Módulo" else "Editar Módulo")
+        },
         text = {
             Column(
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -270,9 +291,13 @@ fun ParentModuleDialog(
                 OutlinedTextField(value = subtitle, onValueChange = { subtitle = it }, label = { Text("Subtítulo") })
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Switch(checked = status, onCheckedChange = { status = it })
+                    Switch(
+                        checked = status == 1,
+                        onCheckedChange = { status = if (it) 1 else 0 }
+                    )
                     Text("Activo", modifier = Modifier.padding(start = 8.dp))
                 }
+
             }
         },
         confirmButton = {
@@ -280,7 +305,7 @@ fun ParentModuleDialog(
                 onClick = {
                     onSave(
                         ParentModule(
-                            id = parentModule?.id ?: "",
+                            id = parentModule?.id ?: 0, // 👈 Int
                             title = title,
                             code = code,
                             subtitle = subtitle,

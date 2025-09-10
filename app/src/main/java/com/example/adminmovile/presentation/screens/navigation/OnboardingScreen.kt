@@ -17,26 +17,25 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
-
 @Composable
 fun OnboardingScreen(
     onComplete: () -> Unit
 ) {
     val pages = listOf(
         OnboardingPage(
-            title = "Turismo en Capachica",
-            description = "Explora los destinos turísticos más hermosos de Capachica con nuestra plataforma moderna y fácil de usar.",
-            icon = Icons.Default.Map
+            title = "Bienvenido a EP Administracion",
+            description = "Descubre las oportunidades de Prácticas Pre Profesionales en la Escuela Profesional de Administración de la UPU.",
+            icon = Icons.Default.School
         ),
         OnboardingPage(
-            title = "Gestión de Municipalidades",
-            description = "Consulta, registra y gestiona información detallada de cada municipalidad de forma eficiente.",
-            icon = Icons.Default.AccountBalance
+            title = "Gestión de Proyectos",
+            description = "Aprende a gestionar proyectos administrativos y desarrollar habilidades clave para tu carrera profesional.",
+            icon = Icons.Default.Assessment
         ),
         OnboardingPage(
-            title = "Reservas y Servicios",
-            description = "Realiza reservas de actividades turísticas, conoce servicios comunitarios y accede a reportes dinámicos.",
-            icon = Icons.Default.EventAvailable
+            title = "Seguimiento y Reportes",
+            description = "Monitorea tu desempeño y registra tus experiencias mediante reportes claros y accesibles.",
+            icon = Icons.Default.Description
         )
     )
 

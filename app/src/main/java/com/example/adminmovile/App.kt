@@ -25,25 +25,26 @@ fun App() {
     val sessionManager: SessionManager = koinInject()
     val scope = rememberCoroutineScope()
     val themeViewModel: ThemeViewModel = koinInject()
-
-    // Inicialmente null hasta que se lea DataStore
     val isDarkModeState by themeViewModel.isDarkMode.collectAsState(initial = null)
 
     if (isDarkModeState == null) {
-        // Mostrar pantalla blanca o Splash mientras se carga el tema
         Box(modifier = Modifier.fillMaxSize().background(Color.White))
     } else {
-        // Ya tenemos el tema real
-        AppTheme(darkTheme = isDarkModeState!!) {
-            Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                NavigationGraph(navController = navController, onLogout = {
-                    scope.launch {
-                        sessionManager.clearSession()
-                        navController.navigate(Routes.LAND_PAGE) {
-                            popUpTo(0) { inclusive = true }
+        ProvideHomeViewModel {
+            AppTheme(darkTheme = isDarkModeState!!) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    NavigationGraph(navController = navController, onLogout = {
+                        scope.launch {
+                            sessionManager.clearSession()
+                            navController.navigate(Routes.LAND_PAGE) {
+                                popUpTo(0) { inclusive = true }
+                            }
                         }
-                    }
-                })
+                    })
+                }
             }
         }
     }

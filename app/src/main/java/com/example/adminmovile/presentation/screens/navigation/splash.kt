@@ -181,18 +181,19 @@ fun SplashScreen(
 
     Box(
         modifier = Modifier
-            .fillMaxSize() // ¡Esto cubre todo!
+            .fillMaxSize()
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFF6750A4),
-                        Color(0xFF1976D2),
-                        Color(0xFF03DAC5)
+                        MaterialTheme.colorScheme.primary,        // Azul vibrante
+                        MaterialTheme.colorScheme.tertiary,       // Amarillo cálido
+                        MaterialTheme.colorScheme.background
                     )
                 )
             ),
         contentAlignment = Alignment.Center
-    ) {
+    )
+    {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,

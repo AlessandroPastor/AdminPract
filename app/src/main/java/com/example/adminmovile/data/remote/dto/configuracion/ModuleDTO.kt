@@ -3,15 +3,25 @@ package com.example.adminmovile.data.remote.dto.configuracion
 import com.example.adminmovile.presentation.components.NotificationState
 import kotlinx.serialization.Serializable
 
+
+@Serializable
+data class ModuleResponse(
+    val content: List<ModuleDTO>,
+    val currentPage: Int,
+    val totalPages: Int,
+    val totalElements: Int
+)
+
+
 @Serializable
 data class ModuleDTO(
-    val id: String? = null,
+    val id: Int? = null,
     val title: String = "",
     val subtitle: String = "",
     val type: String = "",
     val code: String? = null,
     val icon: String? = null,
-    val status: Boolean = true,
+    val status: Int? = null ,
     val moduleOrder: Int = 0,
     val link: String = "",
     val parentModule: ParentModule? = null,
@@ -22,16 +32,16 @@ data class ModuleDTO(
 
 @Serializable
 data class ModuleCreateDTO(
-    val id: String? = null,
+    val id: Int? = null,
     val title: String = "",
     val subtitle: String = "",
     val type: String = "",
     val icon: String? = null,
-    val status: Boolean = true,
+    val status: Int? = null ,
     val selected: Boolean = true,
     val moduleOrder: Int = 0,
     val link: String = "",
-    val parentModuleId: String,
+    val parentModuleId: Int? = null,
     val createdAt: String? = null,
     val updatedAt: String? = null,
     val deletedAt: String? = null
@@ -39,28 +49,21 @@ data class ModuleCreateDTO(
 
 @Serializable
 data class ModuleSelectedDTO(
-    val id: String? = null,
+    val id: Int? = null,
     val title: String,
     val subtitle: String? = null,
     val type: String? = null,
     val icon: String? = null,
-    val status: Boolean = true,
+    val status: Int? = null ,
     val moduleOrder: Int? = null,
     val link: String,
-    val parentModuleId: String? = null,
+    val parentModuleId: Int? = null,
     val createdAt: String? = null,
     val updatedAt: String? = null,
     val deletedAt: String? = null,
     val selected: Boolean? = null
 )
 
-@Serializable
-data class ModuleResponse(
-    val content: List<ModuleDTO>,
-    val currentPage: Int,
-    val totalPages: Int,
-    val totalElements: Int
-)
 
 
 data class ModuleState(
@@ -84,9 +87,9 @@ fun ModuleCreateDTO.toModuleDTO(): ModuleDTO {
         subtitle = this.subtitle.takeIf { it.isNotBlank() } ?: "",
         type = this.type.takeIf { it.isNotBlank() } ?: "",
         icon = this.icon?.takeIf { it.isNotBlank() } ?: "",
-        status = this.status,
+        status = this.status, // ahora es Int?
         moduleOrder = this.moduleOrder,
         link = this.link,
-        parentModule = ParentModule(this.parentModuleId, "Sin título")
+        parentModule = this.parentModuleId?.let { ParentModule(it) }
     )
 }

@@ -131,23 +131,22 @@ fun LoginScreen(
     }
 
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = if (isDarkMode) {
-                        SolidColor(MaterialTheme.colorScheme.background)
-                    } else {
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                AppColors.Primary.copy(alpha = 0.1f),
-                                AppColors.Background
-                            )
-                        )
-                    }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primary,        // Azul vibrante
+                        MaterialTheme.colorScheme.tertiary,       // Amarillo cálido
+                        MaterialTheme.colorScheme.background      // Fondo neutro
+                    )
                 )
-        )
-        {
+            )
+    )
+
+
+    {
             // Fondo animado adaptativo
             if (!isLargeScreen) {
                 AdminSchoolBackground(

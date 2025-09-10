@@ -18,7 +18,8 @@ class ParentModuleRepositoryImpl(
         }
     }
 
-    override suspend fun getParentModuleById(id: String): Result<ParentModule> {
+    // ✅ id cambiado a Int
+    override suspend fun getParentModuleById(id: Int): Result<ParentModule> {
         return try {
             Result.success(apiService.getParentModuleById(id))
         } catch (e: Exception) {
@@ -34,7 +35,8 @@ class ParentModuleRepositoryImpl(
         }
     }
 
-    override suspend fun updateParentModule(id: String, parentModule: ParentModule): Result<ParentModule> {
+    // ✅ id cambiado a Int
+    override suspend fun updateParentModule(id: Int, parentModule: ParentModule): Result<ParentModule> {
         return try {
             Result.success(apiService.updateParentModule(id, parentModule))
         } catch (e: Exception) {
@@ -42,7 +44,8 @@ class ParentModuleRepositoryImpl(
         }
     }
 
-    override suspend fun deleteParentModule(id: String): Result<Unit> {
+    // ✅ id cambiado a Int
+    override suspend fun deleteParentModule(id: Int): Result<Unit> {
         return try {
             apiService.deleteParentModule(id)
             Result.success(Unit)
@@ -66,6 +69,4 @@ class ParentModuleRepositoryImpl(
             Result.failure(e)
         }
     }
-
-
 }

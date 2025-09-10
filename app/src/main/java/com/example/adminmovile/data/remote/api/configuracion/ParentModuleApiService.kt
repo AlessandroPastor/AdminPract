@@ -13,11 +13,12 @@ import io.ktor.client.call.body
 import io.ktor.client.request.*
 import io.ktor.http.*
 
-class ParentModuleApiService(client: HttpClient,
-                             sessionManager: SessionManager
+class ParentModuleApiService(
+    client: HttpClient,
+    sessionManager: SessionManager
 ) : BaseApiService(client, sessionManager) {
 
-    suspend fun getParentModules(page: Int = 0, size: Int = 1, name: String? = null): ParentModuleListResponse {
+    suspend fun getParentModules(page: Int = 0, size: Int = 20, name: String? = null): ParentModuleListResponse {
         return client.get(ApiConstants.Configuration.GET_PARENT_MODULE) {
             parameter("page", page)
             parameter("size", size)
@@ -26,8 +27,9 @@ class ParentModuleApiService(client: HttpClient,
         }.body()
     }
 
-    suspend fun getParentModuleById(id: String): ParentModule {
-        return client.get(ApiConstants.Configuration.GET_PARENT_MODULE_BY_ID.replace("{id}", id)) {
+    // ✅ Cambiar String → Int
+    suspend fun getParentModuleById(id: Int): ParentModule {
+        return client.get(ApiConstants.Configuration.GET_PARENT_MODULE_BY_ID.replace("{id}", id.toString())) {
             addAuthHeader()
         }.body()
     }
@@ -40,16 +42,18 @@ class ParentModuleApiService(client: HttpClient,
         }.body()
     }
 
-    suspend fun updateParentModule(id: String, parentModule: ParentModule): ParentModule {
-        return client.put(ApiConstants.Configuration.UPDATE_PARENT_MODULE.replace("{id}", id)) {
+    // ✅ Cambiar String → Int
+    suspend fun updateParentModule(id: Int, parentModule: ParentModule): ParentModule {
+        return client.put(ApiConstants.Configuration.UPDATE_PARENT_MODULE.replace("{id}", id.toString())) {
             addAuthHeader()
             contentType(ContentType.Application.Json)
             setBody(parentModule)
         }.body()
     }
 
-    suspend fun deleteParentModule(id: String) {
-        client.delete(ApiConstants.Configuration.DELETE_PARENT_MODULE.replace("{id}", id)) {
+    // ✅ Cambiar String → Int
+    suspend fun deleteParentModule(id: Int) {
+        client.delete(ApiConstants.Configuration.DELETE_PARENT_MODULE.replace("{id}", id.toString())) {
             addAuthHeader()
         }
     }
@@ -66,3 +70,4 @@ class ParentModuleApiService(client: HttpClient,
         }.body()
     }
 }
+

@@ -42,11 +42,6 @@ fun ModuleScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val notificationState = rememberNotificationState()
-    val isDarkMode by themeViewModel.isDarkMode.collectAsStateWithLifecycle(
-        initialValue = false,
-        lifecycle = LocalLifecycleOwner.current.lifecycle
-    )
-
     var searchQuery by remember { mutableStateOf("") }
     var selectedModule by remember { mutableStateOf<ModuleDTO?>(null) }
     var moduleToDelete by remember { mutableStateOf<ModuleDTO?>(null) }
@@ -65,7 +60,7 @@ fun ModuleScreen(
             Scaffold(
                 floatingActionButton = {
                     FloatingActionButton(onClick = {
-                        selectedModule = ModuleDTO("", "", "", "")
+                        selectedModule = ModuleDTO(id = null)
                     }) {
                         Icon(Icons.Default.Add, contentDescription = "Agregar módulo")
                     }
@@ -133,15 +128,8 @@ fun ModuleScreen(
                             AppPaginationControls(
                                 currentPage = state.currentPage,
                                 totalPages = state.totalPages,
-                                onPreviousPage = {
-                                    viewModel.loadModules(state.currentPage - 1, searchQuery)
-                                },
-                                onNextPage = {
-                                    viewModel.loadModules(state.currentPage + 1, searchQuery)
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 8.dp)
+                                onPreviousPage = { viewModel.loadModules(state.currentPage - 1, searchQuery) },
+                                onNextPage = { viewModel.loadModules(state.currentPage + 1, searchQuery) }
                             )
                         }
                     }
@@ -156,7 +144,7 @@ fun ModuleScreen(
             onDismiss = { selectedModule = null },
             onSave = { moduleCreateDTO ->
                 val dto = moduleCreateDTO.toModuleDTO()
-                if (dto.id.isNullOrEmpty()) viewModel.createModule(dto)
+                if (dto.id == null) viewModel.createModule(dto)
                 else viewModel.updateModule(dto)
                 selectedModule = null
             }
@@ -224,17 +212,17 @@ fun ModuleScreen(
             contentAlignment = Alignment.Center
         ) {
             Surface(
-                color = if (module.status)
+                color = if (module.status == 1)
                     MaterialTheme.colorScheme.primaryContainer
                 else
                     MaterialTheme.colorScheme.errorContainer,
                 shape = MaterialTheme.shapes.small
             ) {
                 Text(
-                    text = if (module.status) "Activo" else "Inactivo",
+                    text = if (module.status == 1) "Activo" else "Inactivo",
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                     style = MaterialTheme.typography.bodySmall,
-                    color = if (module.status)
+                    color = if (module.status == 1)
                         MaterialTheme.colorScheme.onPrimaryContainer
                     else
                         MaterialTheme.colorScheme.onErrorContainer
@@ -287,12 +275,12 @@ fun ModuleDialog(
     var icon by remember { mutableStateOf(module?.icon ?: "") }
     var link by remember { mutableStateOf(module?.link ?: "") }
     var moduleOrder by remember { mutableStateOf(module?.moduleOrder?.toString() ?: "0") }
-    var status by remember { mutableStateOf(module?.status ?: true) }
+    var status by remember { mutableStateOf(module?.status ?: 1) } // default activo
     var selected by remember { mutableStateOf((module?.let { it as? ModuleCreateDTO })?.selected ?: true) }
 
 
     // ✅ `parentModuleId` correctamente manejado
-    var selectedParent by remember { mutableStateOf(module?.parentModule?.id ?: "") }
+    var selectedParent by remember { mutableStateOf(module?.parentModule?.id ?: 0) }
     var expanded by remember { mutableStateOf(false) }
 
     val focusRequester = remember { FocusRequester() }
@@ -302,7 +290,7 @@ fun ModuleDialog(
     }
 
     AppDialog(
-        title = if (module?.id.isNullOrEmpty()) "Nuevo Módulo" else "Editar Módulo",
+        title = if (module?.id == null) "Nuevo Módulo" else "Editar Módulo",
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(
@@ -316,7 +304,7 @@ fun ModuleDialog(
                         selected = selected,
                         link = link,
                         moduleOrder = moduleOrder.toIntOrNull() ?: 0,
-                        parentModuleId = selectedParent.ifEmpty { "N/A" }
+                        parentModuleId = if (selectedParent == 0) 0 else selectedParent
                     )
                     onSave(moduleToSave)
                 },
@@ -424,9 +412,10 @@ fun ModuleDialog(
                                 Icon(Icons.Default.Remove, contentDescription = null, tint = MaterialTheme.colorScheme.secondary)
                             },
                             onClick = {
-                                selectedParent = ""
+                                selectedParent = 0
                                 expanded = false
                             }
+
                         )
                         Divider()
                         parentModules.forEach { parent ->
@@ -436,7 +425,7 @@ fun ModuleDialog(
                                     Icon(Icons.Default.Folder, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                                 },
                                 onClick = {
-                                    selectedParent = parent.id ?: ""
+                                    selectedParent = 0
                                     expanded = false
                                 }
                             )
@@ -445,22 +434,19 @@ fun ModuleDialog(
                 }
             }
 
-            // 🔘 Estado del módulo (Activo/Inactivo)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text("Estado:", style = MaterialTheme.typography.bodyMedium)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Switch(
-                        checked = status,
-                        onCheckedChange = { status = it }
+                        checked = status == 1,
+                        onCheckedChange = { status = if (it) 1 else 0 }
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(if (status) "Activo" else "Inactivo", style = MaterialTheme.typography.bodyMedium)
+                    Text(if (status == 1) "Activo" else "Inactivo", style = MaterialTheme.typography.bodyMedium)
                 }
             }
 

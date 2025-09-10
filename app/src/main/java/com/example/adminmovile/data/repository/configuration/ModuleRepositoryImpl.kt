@@ -19,8 +19,7 @@ class ModuleRepositoryImpl(
         }
     }
 
-
-    override suspend fun getModuleById(id: String): Result<ModuleDTO> {
+    override suspend fun getModuleById(id: Int): Result<ModuleDTO> {
         return try {
             val module = apiModuleService.getModuleById(id)
             Result.success(module)
@@ -37,7 +36,7 @@ class ModuleRepositoryImpl(
         }
     }
 
-    override suspend fun updateModule(id: String, module: ModuleCreateDTO): Result<ModuleDTO> {
+    override suspend fun updateModule(id: Int, module: ModuleCreateDTO): Result<ModuleDTO> {
         return try {
             Result.success(apiModuleService.updateModule(id, module))
         } catch (e: Exception) {
@@ -45,7 +44,7 @@ class ModuleRepositoryImpl(
         }
     }
 
-    override suspend fun deleteModule(id: String): Result<Unit> {
+    override suspend fun deleteModule(id: Int): Result<Unit> {
         return try {
             Result.success(apiModuleService.deleteModule(id))
         } catch (e: Exception) {
@@ -53,7 +52,7 @@ class ModuleRepositoryImpl(
         }
     }
 
-    override suspend fun getModulesSelected(roleId: String, parentModuleId: String): Result<List<ModuleSelectedDTO>> {
+    override suspend fun getModulesSelected(roleId: Int, parentModuleId: Int): Result<List<ModuleSelectedDTO>> {
         return try {
             Result.success(apiModuleService.getModulesSelected(roleId, parentModuleId))
         } catch (e: Exception) {
